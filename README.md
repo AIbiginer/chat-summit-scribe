@@ -29,11 +29,11 @@
    npm install
    ```
 
-3. 環境変数の設定：
-   ルートディレクトリに`.env`ファイルを作成し、OpenAI APIキーを追加：
+3. セットアップスクリプトを実行してOpenAI APIキーを設定：
    ```
-   VITE_OPENAI_API_KEY=your_api_key_here
+   node setup.js
    ```
+   プロンプトに従ってOpenAI APIキーを入力してください。
 
 4. 開発サーバーを起動：
    ```
