@@ -102,26 +102,31 @@ export default function EnhancedChat() {
   }, [messages]);
 
   return (
-    <div className={`flex h-screen bg-gradient-to-br from-gray-900 to-black text-white ${isFullscreen ? 'w-screen' : 'w-[1024px] mx-auto my-8 rounded-lg shadow-2xl'}`}>
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className={`flex h-screen bg-gradient-to-br from-gray-900 to-black text-white ${isFullscreen ? 'w-screen' : 'w-[1024px] mx-auto my-8 rounded-lg shadow-2xl'}`}
+    >
       <div className="flex-1 flex flex-col max-w-2xl">
         <motion.header 
-          className="bg-gray-800 p-4 flex justify-between items-center rounded-t-lg"
+          className="bg-gray-800 p-6 flex justify-between items-center rounded-t-lg"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <h1 className="text-2xl font-bold">AI チャット</h1>
-          <div className="flex space-x-2">
-            <Button variant="outline" size="icon" onClick={() => setIsFullscreen(!isFullscreen)} className="bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white">
-              {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+          <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">AI チャット</h1>
+          <div className="flex space-x-3">
+            <Button variant="outline" size="icon" onClick={() => setIsFullscreen(!isFullscreen)} className="bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-200">
+              {isFullscreen ? <Minimize2 className="h-5 w-5" /> : <Maximize2 className="h-5 w-5" />}
             </Button>
-            <Button variant="outline" size="icon" onClick={handleRefresh} className="bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white">
-              <RefreshCw className="h-4 w-4" />
+            <Button variant="outline" size="icon" onClick={handleRefresh} className="bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-200">
+              <RefreshCw className="h-5 w-5" />
             </Button>
           </div>
         </motion.header>
 
-        <ScrollArea className="flex-1 p-4 space-y-4 bg-gray-900">
+        <ScrollArea className="flex-1 p-6 space-y-6 bg-gray-900">
           <AnimatePresence>
             {messages.map((message) => (
               <ChatMessage key={message.id} message={message} />
@@ -138,11 +143,16 @@ export default function EnhancedChat() {
         />
       </div>
 
-      <div className="w-64 bg-gray-800 p-4 flex flex-col space-y-4 rounded-r-lg">
-        <Card className="p-4 h-full bg-gray-700 text-white border-none">
+      <motion.div 
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="w-72 bg-gray-800 p-6 flex flex-col space-y-6 rounded-r-lg"
+      >
+        <Card className="p-6 h-full bg-gray-700 text-white border-none shadow-lg">
           <ConversationSummary headline={headline} summary={summary} />
         </Card>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   )
 }

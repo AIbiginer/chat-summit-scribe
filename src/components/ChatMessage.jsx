@@ -14,15 +14,15 @@ const ChatMessage = ({ message }) => {
       className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}
     >
       <div
-        className={`max-w-[70%] p-3 rounded-lg ${
+        className={`max-w-[80%] p-4 rounded-lg ${
           isUser
-            ? 'bg-gray-700 text-white'
+            ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
             : isSystem
             ? 'bg-red-900 text-white'
             : 'bg-gray-800 text-white'
-        } shadow-md`}
+        } shadow-lg`}
       >
-        <p className="text-sm md:text-base">{message.text}</p>
+        <p className="text-sm md:text-base leading-relaxed">{message.text}</p>
       </div>
     </motion.div>
   );
