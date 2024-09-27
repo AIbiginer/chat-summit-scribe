@@ -10,7 +10,7 @@ const LandingPage = () => {
 
   const features = [
     { icon: <FileText className="w-10 h-10 text-purple-400" />, title: "リアルタイム要約", description: "会話の要点を即座に把握" },
-    { icon: <Zap className="w-10 h-10 text-pink-400" />, title: "トピック分析", description: "重要な話題を自動で抽出" },
+    { icon: <Zap className="w-10 h-10 text-pink-400" />, title: "トピック分析", description: "重要なポイントを自動で抽出" },
     { icon: <LayoutDashboard className="w-10 h-10 text-yellow-400" />, title: "インタラクティブダッシュボード", description: "直感的な情報管理" },
   ];
 
@@ -23,10 +23,10 @@ const LandingPage = () => {
         className="max-w-4xl w-full text-center"
       >
         <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
-          SummitScribe
+          InsightSphere
         </h1>
         <p className="text-xl md:text-2xl mb-12 leading-relaxed text-gray-300">
-          AIパワードの会話要約＆トピック分析ツール
+          AIパワードの会話要約＆重要ポイント分析ツール
         </p>
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
@@ -43,7 +43,7 @@ const LandingPage = () => {
           whileTap={{ scale: 0.95 }}
         >
           <Button 
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate('/analyzer')}
             className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white transition-all duration-300 text-xl px-12 py-4 rounded-full shadow-lg"
           >
             始める
