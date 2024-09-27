@@ -4,8 +4,9 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2, RefreshCw, Send } from 'lucide-react';
-import { analyzeQuestion } from '../utils/apiUtils';
+import { analyzeQuestion, generateFollowUpResponse } from '../utils/apiUtils';
 import SummaryVisualizer from './SummaryVisualizer';
+import DoubleCheckButton from './DoubleCheckButton';
 
 export default function QuestionAnalyzer() {
   const [question, setQuestion] = useState('');
@@ -20,11 +21,26 @@ export default function QuestionAnalyzer() {
     },
   });
 
+  const followUpMutation = useMutation({
+    mutationFn: generateFollowUpResponse,
+    onSuccess: (data) => {
+      setAnalysisResult(prevResult => ({
+        ...prevResult,
+        followUp: data
+      }));
+    },
+  });
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (question.trim()) {
       mutate(question);
     }
+  };
+
+  const handleOptionSelect = (item, action) => {
+    const prompt = `${action}について: ${item.content.title || item.content}`;
+    followUpMutation.mutate(prompt);
   };
 
   return (
@@ -49,10 +65,20 @@ export default function QuestionAnalyzer() {
         </form>
         {error && <p className="text-red-500 mb-4">エラー: {error.message}</p>}
         {analysisResult && (
-          <SummaryVisualizer
-            summary={analysisResult.summary}
-            keyPoints={analysisResult.keyPoints}
-          />
+          <>
+            <SummaryVisualizer
+              summary={analysisResult.summary}
+              keyPoints={analysisResult.keyPoints}
+              onOptionSelect={handleOptionSelect}
+            />
+            {analysisResult.followUp && (
+              <div className="mt-6 p-4 bg-gray-700 rounded-lg">
+                <h3 className="text-xl font-semibold mb-2 text-purple-300">フォローアップ</h3>
+                <p className="text-gray-300">{analysisResult.followUp}</p>
+              </div>
+            )}
+            <DoubleCheckButton onDoubleCheck={() => mutate(question)} />
+          </>
         )}
       </Card>
     </div>

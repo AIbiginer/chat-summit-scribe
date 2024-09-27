@@ -52,3 +52,13 @@ ${question}`;
     throw new Error('質問の分析中にエラーが発生しました。しばらくしてからもう一度お試しください。');
   }
 };
+
+export const generateFollowUpResponse = async (prompt) => {
+  try {
+    const result = await callGPTAPI(prompt);
+    return result;
+  } catch (error) {
+    console.error('Error generating follow-up response:', error);
+    throw new Error('フォローアップレスポンスの生成中にエラーが発生しました。しばらくしてからもう一度お試しください。');
+  }
+};

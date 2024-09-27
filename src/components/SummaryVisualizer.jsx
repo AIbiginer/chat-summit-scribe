@@ -1,7 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import OptionSelector from './OptionSelector';
 
-const SummaryVisualizer = ({ summary, keyPoints }) => {
+const SummaryVisualizer = ({ summary, keyPoints, onOptionSelect }) => {
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  const handleItemClick = (item, type) => {
+    setSelectedItem({ content: item, type });
+  };
+
   return (
     <motion.div 
       className="space-y-6"
@@ -17,7 +24,10 @@ const SummaryVisualizer = ({ summary, keyPoints }) => {
         <h2 className="text-2xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
           要約
         </h2>
-        <p className="text-gray-300 leading-relaxed">
+        <p 
+          className="text-gray-300 leading-relaxed cursor-pointer hover:bg-gray-700 p-2 rounded"
+          onClick={() => handleItemClick(summary, 'summary')}
+        >
           {summary}
         </p>
       </motion.div>
@@ -33,10 +43,11 @@ const SummaryVisualizer = ({ summary, keyPoints }) => {
             {keyPoints.map((point, index) => (
               <motion.div 
                 key={index}
-                className="bg-gray-700 rounded-lg p-4 shadow-md"
+                className="bg-gray-700 rounded-lg p-4 shadow-md cursor-pointer hover:bg-gray-600"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.1 * index, duration: 0.3 }}
+                onClick={() => handleItemClick(point, 'keyPoint')}
               >
                 <h4 className="text-lg font-medium text-pink-400 mb-1">{point.title}</h4>
                 <p className="text-sm text-gray-300">{point.description}</p>
@@ -47,6 +58,14 @@ const SummaryVisualizer = ({ summary, keyPoints }) => {
           <p className="text-gray-400">重要ポイントが見つかりませんでした。</p>
         )}
       </motion.div>
+
+      {selectedItem && (
+        <OptionSelector 
+          item={selectedItem} 
+          onOptionSelect={onOptionSelect}
+          onClose={() => setSelectedItem(null)}
+        />
+      )}
     </motion.div>
   );
 };
