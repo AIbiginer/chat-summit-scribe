@@ -30,7 +30,6 @@ export default function QuestionAnalyzer() {
     onSuccess: async (data) => {
       setAnalysisResult(data);
       queryClient.setQueryData(['analysisResult'], data);
-      // 自動ハルシネーションチェックを実行
       const checkResult = await performHallucinationCheck(data);
       setHallucinationCheckResult(checkResult);
     },
@@ -88,6 +87,7 @@ export default function QuestionAnalyzer() {
           <AlertTitle>AIの回答には注意が必要です</AlertTitle>
           <AlertDescription>
             AIは時として誤った情報を生成することがあります。精度を高めるため、ハルシネーションチェック結果を確認し、必要に応じてダブルチェック機能をお使いください。
+            ダブルチェックを行うと、新しい回答が生成され、元の回答と比較されます。
           </AlertDescription>
         </Alert>
         <form onSubmit={handleSubmit} className="mb-6">
