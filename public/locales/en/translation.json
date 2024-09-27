@@ -1,0 +1,12 @@
+{
+  "appName": "InsightSphere",
+  "startAnalysis": "Start Analysis",
+  "enterQuestion": "Enter a question or topic...",
+  "analyze": "Analyze",
+  "summary": "Summary",
+  "keyPoints": "Key Points",
+  "doubleCheck": "Double Check",
+  "followUp": "Follow Up",
+  "loading": "Loading...",
+  "error": "An error occurred. Please try again."
+}

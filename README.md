@@ -10,6 +10,7 @@ AIを活用したリアルタイム会話要約と話題追跡機能を備えた
 - ハルシネーションチェック機能
 - フォローアップ質問生成
 - レスポンシブデザイン
+- 多言語対応
 
 ## 必要条件
 
@@ -99,3 +100,108 @@ Mac/Linux: `./update.sh`
 ## 連絡先
 
 質問や提案がある場合は、[Issueを開く](https://github.com/yourusername/insightsphere/issues)か、[メール](mailto:your.email@example.com)でお問い合わせください。
+
+---
+
+# InsightSphere
+
+An advanced chat application featuring AI-powered real-time conversation summarization and topic tracking.
+
+## Key Features
+
+- Real-time AI chat
+- Dynamic conversation summarization
+- Current topic tracking
+- Hallucination check functionality
+- Follow-up question generation
+- Responsive design
+- Multi-language support
+
+## Requirements
+
+- Node.js (version 14 or higher)
+- npm or yarn
+- OpenAI API key
+
+## Setup
+
+1. Clone the repository:
+   ```
+   git clone https://github.com/yourusername/insightsphere.git
+   cd insightsphere
+   ```
+
+2. Install dependencies and set up:
+
+   Windows:
+   ```
+   install.bat
+   ```
+
+   Mac/Linux:
+   ```
+   chmod +x install.sh
+   ./install.sh
+   ```
+
+3. Create a `.env` file and set your OpenAI API key:
+   ```
+   VITE_OPENAI_API_KEY=your_openai_api_key_here
+   ```
+   **Important**: Do not commit the `.env` file to Git. It contains sensitive information.
+
+## Running the Application
+
+Development mode:
+```
+npm run dev
+```
+
+Production mode:
+Windows: `run_production.bat`
+Mac/Linux: `./run_production.sh`
+
+Access the application by opening `http://localhost:5173` in your browser.
+
+## Usage
+
+1. Click "Start Analysis" on the landing page.
+2. Enter a question or topic for analysis.
+3. View AI responses, summaries, and key points in real-time.
+4. Select follow-up options as needed for more detailed information.
+
+## Updating
+
+To keep the project up-to-date:
+
+Windows: `update.bat`
+Mac/Linux: `./update.sh`
+
+This script performs a Git repository pull, updates dependencies, and checks the OpenAI API key.
+
+## Security Notes
+
+- Do not commit the `.env` file to the Git repository.
+- Manage API keys securely and update them regularly.
+- Implement appropriate security measures when deploying to a public environment.
+
+## Important Notes
+
+- This application is intended for use in a local environment.
+- Always approach AI responses critically and use the double-check feature when necessary.
+
+## Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+## License
+
+This project is released under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Development Status
+
+This project is currently under development. There may be bugs or unimplemented features. If you encounter any issues, please open an Issue to report them.
+
+## Contact
+
+For questions or suggestions, please [open an Issue](https://github.com/yourusername/insightsphere/issues) or [email us](mailto:your.email@example.com).
