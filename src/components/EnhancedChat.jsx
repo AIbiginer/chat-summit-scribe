@@ -22,9 +22,9 @@ export default function EnhancedChat() {
   const callGPTAPI = async (prompt) => {
     try {
       const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-        model: "gpt-4o-mini",
+        model: "gpt-3.5-turbo",
         messages: [{ role: "user", content: prompt }],
-        max_tokens: 2000,
+        max_tokens: 150,
         n: 1,
         stop: null,
         temperature: 0.7,
@@ -33,7 +33,7 @@ export default function EnhancedChat() {
           'Authorization': `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
           'Content-Type': 'application/json',
         },
-        timeout: 30000 // 30秒のタイムアウトを設定
+        timeout: 10000 // 10秒のタイムアウトを設定
       });
       return response.data.choices[0].message.content.trim();
     } catch (error) {
@@ -49,20 +49,11 @@ export default function EnhancedChat() {
   }
 
   const generateHeadlineAndSummary = async (newMessages) => {
-    const conversationContext = newMessages.map(m => `${m.sender}: ${m.text}`).join('\n');
-    const headlinePrompt = `以下の会話の見出しを、新聞の一面を飾るような衝撃的かつ魅力的な見出しとして20文字以内で作成してください。会話の本質を捉え、読者の興味を引く表現を心がけてください：\n${conversationContext}\n前回の見出し: ${headline}`;
-    const summaryPrompt = `以下の会話の要約を、ピューリッツァー賞級のジャーナリストが書いたかのような洞察に富んだ形で100文字以内で作成してください。重要なポイントや興味深い展開に焦点を当て、読者に新たな視点を提供するような表現を心がけてください：\n${conversationContext}\n前回の要約: ${summary}`;
-    const topicAnalysisPrompt = `以下の会話から主要な話題を3つ抽出し、各話題の重要度（パーセンテージ）を算出してください。さらに、各話題に関連するキーワードを5つ挙げ、その話題に関する簡潔な説明（30文字程度）を追加してください。結果は以下の形式でJSON形式で返してください：
-    [
-      {
-        "name": "話題名",
-        "value": 重要度（数値）,
-        "keywords": ["キーワード1", "キーワード2", "キーワード3", "キーワード4", "キーワード5"],
-        "description": "話題の簡潔な説明"
-      },
-      ...
-    ]
-    会話内容：${conversationContext}`;
+    const lastFiveMessages = newMessages.slice(-5);
+    const conversationContext = lastFiveMessages.map(m => `${m.sender}: ${m.text}`).join('\n');
+    const headlinePrompt = `次の会話の見出しを10文字以内で作成:${conversationContext}`;
+    const summaryPrompt = `次の会話の要約を50文字以内で作成:${conversationContext}`;
+    const topicAnalysisPrompt = `次の会話から主要な話題を2つ抽出し、各話題の重要度（%）を算出。結果をJSON形式で返す:${conversationContext}`;
 
     try {
       const [newHeadline, newSummary, topicAnalysis] = await Promise.all([
@@ -110,7 +101,7 @@ export default function EnhancedChat() {
         setMessages(prevMessages => [...prevMessages, { id: Date.now(), text: `エラーが発生しました: ${error.message}`, sender: 'system' }])
       }
     }
-  }, [inputText, messages, headline, summary])
+  }, [inputText, messages])
 
   const handleRefresh = useCallback(() => {
     setMessages([]);
