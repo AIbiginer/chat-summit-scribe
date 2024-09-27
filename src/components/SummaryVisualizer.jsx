@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import OptionSelector from './OptionSelector';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { InfoIcon, CheckCircle } from 'lucide-react';
 
 const SummaryVisualizer = ({ summary, keyPoints, hallucinationCheckResult, onOptionSelect }) => {
   const [selectedItem, setSelectedItem] = useState(null);
@@ -12,9 +14,7 @@ const SummaryVisualizer = ({ summary, keyPoints, hallucinationCheckResult, onOpt
   const renderHallucinationStatus = (status, explanation) => (
     <span className={`ml-2 ${status === '✅' ? 'text-green-500' : 'text-red-500'}`}>
       {status}
-      {status === '❌' && (
-        <span className="text-xs ml-2 text-red-300">{explanation}</span>
-      )}
+      <span className="text-xs ml-2 text-gray-300">{explanation}</span>
     </span>
   );
 
@@ -25,6 +25,24 @@ const SummaryVisualizer = ({ summary, keyPoints, hallucinationCheckResult, onOpt
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
+      {hallucinationCheckResult && hallucinationCheckResult.overallStatus === "問題なし" && (
+        <Alert className="bg-green-100 border-green-400">
+          <CheckCircle className="h-4 w-4 text-green-600" />
+          <AlertTitle className="text-green-800">チェック完了</AlertTitle>
+          <AlertDescription className="text-green-700">
+            AIの回答に問題は見つかりませんでした。
+          </AlertDescription>
+        </Alert>
+      )}
+      {hallucinationCheckResult && hallucinationCheckResult.overallStatus === "要注意" && (
+        <Alert className="bg-yellow-100 border-yellow-400">
+          <InfoIcon className="h-4 w-4 text-yellow-600" />
+          <AlertTitle className="text-yellow-800">注意</AlertTitle>
+          <AlertDescription className="text-yellow-700">
+            AIの回答に疑わしい点が見つかりました。詳細を確認してください。
+          </AlertDescription>
+        </Alert>
+      )}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
