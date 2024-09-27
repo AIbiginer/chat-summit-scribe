@@ -88,7 +88,7 @@ export default function EnhancedChat() {
             inputText={inputText}
             setInputText={setInputText}
             handleSendMessage={handleSendMessage}
-            error={error}
+            error={sendMessageMutation.error ? sendMessageMutation.error.message : null}
           />
         </Suspense>
       </div>
@@ -101,11 +101,15 @@ export default function EnhancedChat() {
       >
         <Card className="p-6 h-full bg-gray-700 text-white border-none shadow-lg">
           <Suspense fallback={<div>Loading...</div>}>
-            <ConversationSummary 
-              headline={chatData?.headline} 
-              summary={chatData?.summary} 
-              topicData={chatData?.topicData} 
-            />
+            {error ? (
+              <div className="text-red-500">エラーが発生しました: {error.message}</div>
+            ) : (
+              <ConversationSummary 
+                headline={chatData?.headline} 
+                summary={chatData?.summary} 
+                topicData={chatData?.topicData} 
+              />
+            )}
           </Suspense>
         </Card>
       </motion.div>
