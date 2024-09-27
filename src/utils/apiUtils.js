@@ -43,10 +43,18 @@ export const generateHeadlineAndSummary = async (messages) => {
       callGPTAPI(topicAnalysisPrompt)
     ]);
 
+    let parsedTopicData;
+    try {
+      parsedTopicData = JSON.parse(topicAnalysis);
+    } catch (error) {
+      console.error('Error parsing topic analysis:', error);
+      parsedTopicData = []; // Fallback to empty array if parsing fails
+    }
+
     return {
       headline,
       summary,
-      topicData: JSON.parse(topicAnalysis)
+      topicData: parsedTopicData
     };
   } catch (error) {
     console.error('Error generating headline and summary:', error);
