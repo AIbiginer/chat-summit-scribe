@@ -20,7 +20,7 @@ export default function EnhancedChat() {
   const callGPTAPI = async (prompt) => {
     try {
       const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-        model: "gpt-4-mini",
+        model: "gpt-4-mini", // 修正されたモデル名
         messages: [{ role: "user", content: prompt }],
         max_tokens: 150,
         n: 1,
@@ -99,6 +99,7 @@ export default function EnhancedChat() {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
+  return (
   return (
     <div className={`flex h-screen bg-gray-100 text-gray-800 ${isFullscreen ? 'w-screen' : 'w-[1280px] mx-auto my-8 shadow-xl'}`}>
       <div className="flex-1 flex flex-col">
