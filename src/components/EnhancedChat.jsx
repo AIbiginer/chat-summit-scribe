@@ -22,7 +22,7 @@ export default function EnhancedChat() {
       const response = await axios.post('https://api.openai.com/v1/chat/completions', {
         model: "gpt-3.5-turbo",
         messages: [{ role: "user", content: prompt }],
-        max_tokens: 150,
+        max_tokens: 500, // 増やしてより長い応答を得る
         n: 1,
         stop: null,
         temperature: 0.7,
@@ -88,6 +88,13 @@ export default function EnhancedChat() {
     }
   }, [inputText, messages, headline, summary])
 
+  const handleRefresh = useCallback(() => {
+    setMessages([]);
+    setHeadline('会話を開始してください');
+    setSummary('まだ会話が始まっていません');
+    setError(null);
+  }, []);
+
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -106,7 +113,7 @@ export default function EnhancedChat() {
             <Button variant="outline" size="icon" onClick={() => setIsFullscreen(!isFullscreen)} className="bg-transparent border-white text-white hover:bg-white hover:text-black">
               {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
             </Button>
-            <Button variant="outline" size="icon" className="bg-transparent border-white text-white hover:bg-white hover:text-black">
+            <Button variant="outline" size="icon" onClick={handleRefresh} className="bg-transparent border-white text-white hover:bg-white hover:text-black">
               <RefreshCw className="h-4 w-4" />
             </Button>
           </div>
