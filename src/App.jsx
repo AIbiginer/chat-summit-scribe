@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import QuestionAnalyzer from "./components/QuestionAnalyzer";
-import LandingPage from "./pages/LandingPage";
 import { isLocalEnvironment } from "./utils/environmentCheck";
+import LoadingIndicator from "./components/LoadingIndicator";
+
+// Dynamically import larger components
+const LandingPage = lazy(() => import("./pages/LandingPage"));
+const QuestionAnalyzer = lazy(() => import("./components/QuestionAnalyzer"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,10 +34,12 @@ const App = () => {
         <TooltipProvider>
           <Toaster />
           <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/analyzer" element={<QuestionAnalyzer />} />
-            </Routes>
+            <Suspense fallback={<LoadingIndicator />}>
+              <Routes>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/analyzer" element={<QuestionAnalyzer />} />
+              </Routes>
+            </Suspense>
           </BrowserRouter>
         </TooltipProvider>
       </QueryClientProvider>
