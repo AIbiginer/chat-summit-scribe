@@ -5,6 +5,7 @@ import axios from 'axios'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Card } from "@/components/ui/card"
 import ConversationMindMap from './ConversationMindMap'
 
 export default function EnhancedChat() {
@@ -95,9 +96,6 @@ export default function EnhancedChat() {
     setMindMapData(prevData => ({ ...prevData }));
   };
 
-  useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
 
   return (
     <div className={`flex h-screen bg-gray-100 text-gray-800 ${isFullscreen ? 'w-screen' : 'w-[1280px] mx-auto my-8 shadow-xl'}`}>
@@ -168,10 +166,10 @@ export default function EnhancedChat() {
         </div>
       </div>
 
-      <ScrollArea className="w-64 bg-gray-50 border-l border-gray-200 p-4 flex flex-col">
-        <div className="space-y-6">
-          <div>
-            <h2 className="text-lg font-semibold mb-4">Summaries</h2>
+      <div className="w-64 bg-gray-50 border-l border-gray-200 p-4 flex flex-col space-y-4">
+        <Card className="p-4 h-1/3">
+          <h2 className="text-lg font-semibold mb-2">Summaries</h2>
+          <ScrollArea className="h-[calc(100%-2rem)]">
             <div className="space-y-2">
               {summaries.map(summary => (
                 <div key={summary.id} className="p-2 bg-white rounded shadow">
@@ -180,23 +178,27 @@ export default function EnhancedChat() {
                 </div>
               ))}
             </div>
-          </div>
+          </ScrollArea>
+        </Card>
 
-          <div>
-            <h3 className="text-md font-semibold mb-2">Conversation Flow</h3>
+        <Card className="p-4 h-1/3">
+          <h3 className="text-md font-semibold mb-2">Conversation Flow</h3>
+          <ScrollArea className="h-[calc(100%-2rem)]">
             <div className="flex flex-wrap gap-1">
               {conversationFlow.map((item, index) => (
                 <span key={index} className="text-xs bg-gray-200 rounded px-1">{item}</span>
               ))}
             </div>
-          </div>
+          </ScrollArea>
+        </Card>
 
-          <div>
-            <h3 className="text-md font-semibold mb-2">Mind Map</h3>
+        <Card className="p-4 h-1/3">
+          <h3 className="text-md font-semibold mb-2">Mind Map</h3>
+          <ScrollArea className="h-[calc(100%-2rem)]">
             <ConversationMindMap data={mindMapData} onUpdate={handleMindMapUpdate} />
-          </div>
-        </div>
-      </ScrollArea>
+          </ScrollArea>
+        </Card>
+      </div>
     </div>
   )
 }
