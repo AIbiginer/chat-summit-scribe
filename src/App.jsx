@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import EnhancedChat from "./components/EnhancedChat";
+import LandingPage from "./pages/LandingPage";
 import { isLocalEnvironment } from "./utils/environmentCheck";
 
 const queryClient = new QueryClient({
@@ -31,7 +32,8 @@ const App = () => {
           <Toaster />
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<EnhancedChat />} />
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/dashboard" element={<EnhancedChat />} />
             </Routes>
           </BrowserRouter>
         </TooltipProvider>
