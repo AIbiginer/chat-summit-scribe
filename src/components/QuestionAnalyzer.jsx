@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2, RefreshCw, Send } from 'lucide-react';
 import { analyzeQuestion, compareAnalysis } from '../utils/apiUtils';
+import { performHallucinationCheck } from '../utils/hallucinationCheck';
 import SummaryVisualizer from './SummaryVisualizer';
 import DoubleCheckButton from './DoubleCheckButton';
 import LoadingIndicator from './LoadingIndicator';
@@ -14,6 +15,7 @@ import { InfoIcon } from 'lucide-react';
 export default function QuestionAnalyzer() {
   const [question, setQuestion] = useState('');
   const [analysisResult, setAnalysisResult] = useState(null);
+  const [hallucinationCheckResult, setHallucinationCheckResult] = useState(null);
   const [isDoubleChecked, setIsDoubleChecked] = useState(false);
   const [doubleCheckStatus, setDoubleCheckStatus] = useState('未チェック');
   const queryClient = useQueryClient();
@@ -25,9 +27,12 @@ export default function QuestionAnalyzer() {
       setDoubleCheckStatus('未チェック');
       return result;
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       setAnalysisResult(data);
       queryClient.setQueryData(['analysisResult'], data);
+      // 自動ハルシネーションチェックを実行
+      const checkResult = await performHallucinationCheck(data);
+      setHallucinationCheckResult(checkResult);
     },
   });
 
@@ -73,7 +78,7 @@ export default function QuestionAnalyzer() {
           <InfoIcon className="h-4 w-4" />
           <AlertTitle>AIの回答には注意が必要です</AlertTitle>
           <AlertDescription>
-            AIは時として誤った情報を生成することがあります。精度を高めるため、ダブルチェック機能の使用をおすすめします。
+            AIは時として誤った情報を生成することがあります。精度を高めるため、ハルシネーションチェック結果を確認し、必要に応じてダブルチェック機能をお使いください。
           </AlertDescription>
         </Alert>
         <form onSubmit={handleSubmit} className="mb-6">
@@ -97,6 +102,7 @@ export default function QuestionAnalyzer() {
             <SummaryVisualizer
               summary={analysisResult.summary}
               keyPoints={analysisResult.keyPoints}
+              hallucinationCheckResult={hallucinationCheckResult}
             />
             <div className="mt-4 flex items-center justify-between">
               <DoubleCheckButton 

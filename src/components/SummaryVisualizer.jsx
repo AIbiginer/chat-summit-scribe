@@ -2,12 +2,21 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import OptionSelector from './OptionSelector';
 
-const SummaryVisualizer = ({ summary, keyPoints, onOptionSelect }) => {
+const SummaryVisualizer = ({ summary, keyPoints, hallucinationCheckResult, onOptionSelect }) => {
   const [selectedItem, setSelectedItem] = useState(null);
 
   const handleItemClick = (item, type) => {
     setSelectedItem({ content: item, type });
   };
+
+  const renderHallucinationStatus = (status, explanation) => (
+    <span className={`ml-2 ${status === '✅' ? 'text-green-500' : 'text-red-500'}`}>
+      {status}
+      {status === '❌' && (
+        <span className="text-xs ml-2 text-red-300">{explanation}</span>
+      )}
+    </span>
+  );
 
   return (
     <motion.div 
@@ -23,6 +32,10 @@ const SummaryVisualizer = ({ summary, keyPoints, onOptionSelect }) => {
       >
         <h2 className="text-2xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
           要約
+          {hallucinationCheckResult && renderHallucinationStatus(
+            hallucinationCheckResult.summary.status,
+            hallucinationCheckResult.summary.explanation
+          )}
         </h2>
         <p 
           className="text-gray-300 leading-relaxed cursor-pointer hover:bg-gray-700 p-2 rounded"
@@ -49,7 +62,13 @@ const SummaryVisualizer = ({ summary, keyPoints, onOptionSelect }) => {
                 transition={{ delay: 0.1 * index, duration: 0.3 }}
                 onClick={() => handleItemClick(point, 'keyPoint')}
               >
-                <h4 className="text-lg font-medium text-pink-400 mb-1">{point.title}</h4>
+                <h4 className="text-lg font-medium text-pink-400 mb-1">
+                  {point.title}
+                  {hallucinationCheckResult && renderHallucinationStatus(
+                    hallucinationCheckResult.keyPoints[index].status,
+                    hallucinationCheckResult.keyPoints[index].explanation
+                  )}
+                </h4>
                 <p className="text-sm text-gray-300">{point.description}</p>
               </motion.div>
             ))}
