@@ -1,70 +1,51 @@
-# Welcome to your GPT Engineer project
+# Enhanced Chat Application
 
-## Project info
+This project is an AI-powered chat application with advanced features like conversation summaries and topic tracking.
 
-**URL**: https://run.gptengineer.app/projects/70211a96-b41e-4f8e-b314-236afcec9871/improve
+## Installation and Setup
 
-## How can I edit this code?
+Follow these steps to set up the project locally:
 
-There are several ways of editing your application.
+1. Clone the repository:
+   ```
+   git clone https://github.com/yourusername/enhanced-chat.git
+   cd enhanced-chat
+   ```
 
-**Use GPT Engineer**
+2. Install dependencies:
+   ```
+   npm install
+   ```
 
-Simply visit the GPT Engineer project at [GPT Engineer](https://gptengineer.app/projects/70211a96-b41e-4f8e-b314-236afcec9871/improve) and start prompting.
+3. Create a `.env` file in the root directory and add your OpenAI API key:
+   ```
+   OPENAI_API_KEY=your_api_key_here
+   ```
 
-Changes made via gptengineer.app will be committed automatically to this repo.
+4. Start the development server:
+   ```
+   npm run dev
+   ```
 
-**Use your preferred IDE**
+5. Open your browser and navigate to `http://localhost:5173` to view the application.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in the GPT Engineer UI.
+## Usage
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- Navigate to the chat page by clicking "Start Chatting" on the landing page.
+- Type your message in the input field and press Enter or click the Send button.
+- The AI will respond, and you'll see the conversation summary and current topic update in real-time.
 
-Follow these steps:
+## Features
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+- Real-time AI-powered chat
+- Conversation summaries
+- Current topic tracking
+- Responsive design
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## Contributing
 
-# Step 3: Install the necessary dependencies.
-npm i
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+## License
 
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with .
-
-- Vite
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-All GPT Engineer projects can be deployed directly via the GPT Engineer app.
-
-Simply visit your project at [GPT Engineer](https://gptengineer.app/projects/70211a96-b41e-4f8e-b314-236afcec9871/improve) and click on Share -> Publish.
-
-## I want to use a custom domain - is that possible?
-
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.gptengineer.app/tips-tricks/custom-domain/)
+This project is licensed under the MIT License.
