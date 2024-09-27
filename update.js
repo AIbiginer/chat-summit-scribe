@@ -19,8 +19,26 @@ try {
   console.log('ローカルの main ブランチを更新しています...');
   execSync('git pull origin main', { stdio: 'inherit' });
 
-  // 依存関係を更新
-  console.log('依存関係を更新しています...');
+  // 依存関係を最新バージョンに更新
+  console.log('依存関係を最新バージョンに更新しています...');
+  execSync('npm update --latest', { stdio: 'inherit' });
+
+  // package.json から依存関係のバージョンを更新
+  const packageJsonPath = path.join(__dirname, 'package.json');
+  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+  
+  for (const depType of ['dependencies', 'devDependencies']) {
+    if (packageJson[depType]) {
+      for (const dep in packageJson[depType]) {
+        packageJson[depType][dep] = '*';
+      }
+    }
+  }
+
+  fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
+
+  // 依存関係を再インストール
+  console.log('依存関係を再インストールしています...');
   execSync('npm install', { stdio: 'inherit' });
 
   // .env ファイルの確認と作成
