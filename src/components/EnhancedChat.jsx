@@ -1,57 +1,67 @@
-import React, { useState, useCallback, useMemo } from 'react'
-import { Send, Maximize2, Minimize2, RefreshCw } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Card } from "@/components/ui/card"
-import ConversationSummary from './ConversationSummary'
-import ChatMessage from './ChatMessage'
-import ChatInput from './ChatInput'
-import { callGPTAPI, generateHeadlineAndSummary } from '../utils/apiUtils'
+import React, { useState, useCallback, useMemo, lazy, Suspense } from 'react';
+import { Send, Maximize2, Minimize2, RefreshCw } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Card } from "@/components/ui/card";
+import { VirtualList } from 'react-tiny-virtual-list';
+import { callGPTAPI, generateHeadlineAndSummary } from '../utils/apiUtils';
+
+const ConversationSummary = lazy(() => import('./ConversationSummary'));
+const ChatInput = lazy(() => import('./ChatInput'));
+const ChatMessage = lazy(() => import('./ChatMessage'));
 
 export default function EnhancedChat() {
-  const [messages, setMessages] = useState([])
-  const [inputText, setInputText] = useState('')
-  const [isFullscreen, setIsFullscreen] = useState(false)
-  const queryClient = useQueryClient()
+  const [messages, setMessages] = useState([]);
+  const [inputText, setInputText] = useState('');
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const queryClient = useQueryClient();
 
   const { data: chatData, isLoading, error } = useQuery({
-    queryKey: ['chatData'],
+    queryKey: ['chatData', messages],
     queryFn: () => generateHeadlineAndSummary(messages),
     enabled: messages.length > 0,
-  })
+  });
 
   const sendMessageMutation = useMutation({
     mutationFn: (newMessage) => callGPTAPI(newMessage),
     onSuccess: (aiResponse) => {
-      const aiMessage = { id: Date.now(), text: aiResponse, sender: 'ai' }
-      setMessages(prev => [...prev, aiMessage])
-      queryClient.invalidateQueries(['chatData'])
+      const aiMessage = { id: Date.now(), text: aiResponse, sender: 'ai' };
+      setMessages(prev => [...prev, aiMessage]);
+      queryClient.invalidateQueries(['chatData']);
     },
-  })
+  });
 
   const handleSendMessage = useCallback(() => {
     if (inputText.trim()) {
-      const newMessage = { id: Date.now(), text: inputText, sender: 'user' }
-      setMessages(prev => [...prev, newMessage])
-      setInputText('')
-      sendMessageMutation.mutate(inputText)
+      const newMessage = { id: Date.now(), text: inputText, sender: 'user' };
+      setMessages(prev => [...prev, newMessage]);
+      setInputText('');
+      sendMessageMutation.mutate(inputText);
     }
-  }, [inputText, sendMessageMutation])
+  }, [inputText, sendMessageMutation]);
 
   const handleRefresh = useCallback(() => {
-    setMessages([])
-    queryClient.invalidateQueries(['chatData'])
-  }, [queryClient])
+    setMessages([]);
+    queryClient.invalidateQueries(['chatData']);
+  }, [queryClient]);
 
   const memoizedChatMessages = useMemo(() => (
-    <AnimatePresence>
-      {messages.map((message) => (
-        <ChatMessage key={message.id} message={message} />
-      ))}
-    </AnimatePresence>
-  ), [messages])
+    <VirtualList
+      width="100%"
+      height={400}
+      itemCount={messages.length}
+      itemSize={50}
+      renderItem={({ index, style }) => (
+        <div style={style}>
+          <Suspense fallback={<div>Loading...</div>}>
+            <ChatMessage key={messages[index].id} message={messages[index]} />
+          </Suspense>
+        </div>
+      )}
+    />
+  ), [messages]);
 
   return (
     <motion.div 
@@ -82,12 +92,14 @@ export default function EnhancedChat() {
           {memoizedChatMessages}
         </ScrollArea>
 
-        <ChatInput
-          inputText={inputText}
-          setInputText={setInputText}
-          handleSendMessage={handleSendMessage}
-          error={error}
-        />
+        <Suspense fallback={<div>Loading...</div>}>
+          <ChatInput
+            inputText={inputText}
+            setInputText={setInputText}
+            handleSendMessage={handleSendMessage}
+            error={error}
+          />
+        </Suspense>
       </div>
 
       <motion.div 
@@ -97,13 +109,15 @@ export default function EnhancedChat() {
         className="w-[40%] bg-gray-800 p-6 flex flex-col space-y-6 rounded-r-lg"
       >
         <Card className="p-6 h-full bg-gray-700 text-white border-none shadow-lg">
-          <ConversationSummary 
-            headline={chatData?.headline} 
-            summary={chatData?.summary} 
-            topicData={chatData?.topicData} 
-          />
+          <Suspense fallback={<div>Loading...</div>}>
+            <ConversationSummary 
+              headline={chatData?.headline} 
+              summary={chatData?.summary} 
+              topicData={chatData?.topicData} 
+            />
+          </Suspense>
         </Card>
       </motion.div>
     </motion.div>
-  )
+  );
 }
