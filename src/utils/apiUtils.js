@@ -20,7 +20,7 @@ export const callGPTAPI = async (prompt) => {
       max_tokens: 500,
       n: 1,
       stop: null,
-      temperature: 0.7,
+      temperature: 0.5, // 精度を上げるために温度を下げる
     });
     return response.data.choices[0].message.content.trim();
   } catch (error) {
@@ -30,7 +30,7 @@ export const callGPTAPI = async (prompt) => {
 };
 
 export const analyzeQuestion = async (question) => {
-  const prompt = `以下の質問を分析し、簡潔な要約と重要ポイントを生成してください。結果は以下のJSON形式で返してください：
+  const prompt = `以下の質問を分析し、簡潔で正確な要約と重要ポイントを生成してください。結果は以下のJSON形式で返してください：
 
 {
   "summary": "質問の要約（200文字以内）",
@@ -40,6 +40,8 @@ export const analyzeQuestion = async (question) => {
     {"title": "重要ポイント3（30文字以内）", "description": "説明（50文字以内）"}
   ]
 }
+
+質問の内容を正確に理解し、適切な要約と重要ポイントを抽出してください。
 
 質問：
 ${question}`;
@@ -60,28 +62,5 @@ export const generateFollowUpResponse = async (prompt) => {
   } catch (error) {
     console.error('Error generating follow-up response:', error);
     throw new Error('フォローアップレスポンスの生成中にエラーが発生しました。しばらくしてからもう一度お試しください。');
-  }
-};
-
-export const summarizeQuestionAndAnswer = async (question, answer) => {
-  const prompt = `以下の質問と回答を要約してください。要約は簡潔で、すぐに読める程度の詳細さにしてください。結果は以下のJSON形式で返してください：
-
-{
-  "questionSummary": "質問の要約（100文字以内）",
-  "answerSummary": "回答の要約（200文字以内）"
-}
-
-質問：
-${question}
-
-回答：
-${answer}`;
-
-  try {
-    const result = await callGPTAPI(prompt);
-    return JSON.parse(result);
-  } catch (error) {
-    console.error('Error summarizing question and answer:', error);
-    throw new Error('要約の生成中にエラーが発生しました。しばらくしてからもう一度お試しください。');
   }
 };

@@ -4,14 +4,13 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2, RefreshCw, Send } from 'lucide-react';
-import { analyzeQuestion, generateFollowUpResponse, summarizeQuestionAndAnswer } from '../utils/apiUtils';
+import { analyzeQuestion, generateFollowUpResponse } from '../utils/apiUtils';
 import SummaryVisualizer from './SummaryVisualizer';
 import DoubleCheckButton from './DoubleCheckButton';
 
 export default function QuestionAnalyzer() {
   const [question, setQuestion] = useState('');
   const [analysisResult, setAnalysisResult] = useState(null);
-  const [summary, setSummary] = useState(null);
   const queryClient = useQueryClient();
 
   const { isLoading, error, mutate } = useMutation({
@@ -24,16 +23,12 @@ export default function QuestionAnalyzer() {
 
   const followUpMutation = useMutation({
     mutationFn: generateFollowUpResponse,
-    onSuccess: async (data) => {
+    onSuccess: (data) => {
       const updatedResult = {
         ...analysisResult,
         followUp: data
       };
       setAnalysisResult(updatedResult);
-      
-      // 質問と回答の要約を生成
-      const summaryResult = await summarizeQuestionAndAnswer(question, data);
-      setSummary(summaryResult);
     },
   });
 
@@ -47,6 +42,13 @@ export default function QuestionAnalyzer() {
   const handleOptionSelect = (item, action) => {
     const prompt = `${action}について: ${item.content.title || item.content}`;
     followUpMutation.mutate(prompt);
+  };
+
+  const handleDoubleCheck = () => {
+    // ダブルチェック時に新しい分析を行う
+    if (question.trim()) {
+      mutate(question);
+    }
   };
 
   return (
@@ -70,13 +72,6 @@ export default function QuestionAnalyzer() {
           </div>
         </form>
         {error && <p className="text-red-500 mb-4">エラー: {error.message}</p>}
-        {summary && (
-          <div className="mb-6 p-4 bg-gray-700 rounded-lg">
-            <h3 className="text-xl font-semibold mb-2 text-purple-300">要約</h3>
-            <p className="text-gray-300 mb-2"><strong>質問:</strong> {summary.questionSummary}</p>
-            <p className="text-gray-300"><strong>回答:</strong> {summary.answerSummary}</p>
-          </div>
-        )}
         {analysisResult && (
           <>
             <SummaryVisualizer
@@ -90,7 +85,7 @@ export default function QuestionAnalyzer() {
                 <p className="text-gray-300">{analysisResult.followUp}</p>
               </div>
             )}
-            <DoubleCheckButton onDoubleCheck={() => mutate(question)} />
+            <DoubleCheckButton onDoubleCheck={handleDoubleCheck} />
           </>
         )}
       </Card>
