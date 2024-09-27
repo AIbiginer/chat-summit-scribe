@@ -1,3 +1,5 @@
+2024/9　現在多言語が機能していません。インタフェースは日本語のみ対応しています。
+
 # インサイトスフィア (InsightSphere)
 
 AIを活用したリアルタイム会話要約と話題追跡機能を備えた先進的なチャットアプリケーションです。
@@ -108,6 +110,8 @@ Mac/Linux: `./update.sh`
 このプロジェクトは現在開発中です。バグや未実装の機能がある可能性があります。問題を発見した場合は、Issueを開いてご報告ください。
 
 ---
+
+September 2024: The multilingual function is currently not working. The interface is only available in Japanese.
 
 # InsightSphere
 
