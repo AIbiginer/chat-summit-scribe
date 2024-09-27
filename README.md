@@ -1,51 +1,51 @@
-# Enhanced Chat Application
+# 拡張チャットアプリケーション
 
-This project is an AI-powered chat application with advanced features like conversation summaries and topic tracking.
+このプロジェクトは、会話の要約やトピック追跡などの高度な機能を備えたAI駆動のチャットアプリケーションです。
 
-## Installation and Setup
+## インストールとセットアップ
 
-Follow these steps to set up the project locally:
+以下の手順に従って、プロジェクトをローカルで設定してください：
 
-1. Clone the repository:
+1. リポジトリをクローンします：
    ```
    git clone https://github.com/yourusername/enhanced-chat.git
    cd enhanced-chat
    ```
 
-2. Install dependencies:
+2. 依存関係をインストールします：
    ```
    npm install
    ```
 
-3. Create a `.env` file in the root directory and add your OpenAI API key:
+3. ルートディレクトリに`.env`ファイルを作成し、OpenAI APIキーを追加します：
    ```
    OPENAI_API_KEY=your_api_key_here
    ```
 
-4. Start the development server:
+4. 開発サーバーを起動します：
    ```
    npm run dev
    ```
 
-5. Open your browser and navigate to `http://localhost:5173` to view the application.
+5. コマンドプロンプトに表示されたURLをクリックしてブラウザで開き、アプリケーションを表示します。
 
-## Usage
+## 使用方法
 
-- Navigate to the chat page by clicking "Start Chatting" on the landing page.
-- Type your message in the input field and press Enter or click the Send button.
-- The AI will respond, and you'll see the conversation summary and current topic update in real-time.
+- ランディングページの「チャットを開始」をクリックしてチャットページに移動します。
+- 入力フィールドにメッセージを入力し、Enterキーを押すか送信ボタンをクリックします。
+- AIが応答し、会話の要約と現在のトピックがリアルタイムで更新されます。
 
-## Features
+## 機能
 
-- Real-time AI-powered chat
-- Conversation summaries
-- Current topic tracking
-- Responsive design
+- リアルタイムAI駆動チャット
+- 会話の要約
+- 現在のトピック追跡
+- レスポンシブデザイン
 
-## Contributing
+## 貢献
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+貢献は歓迎します！お気軽にプルリクエストを提出してください。
 
-## License
+## ライセンス
 
-This project is licensed under the MIT License.
+このプロジェクトはMITライセンスの下でライセンスされています。
