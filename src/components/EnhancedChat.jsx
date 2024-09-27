@@ -3,7 +3,6 @@ import { Send, Maximize2, Minimize2, RefreshCw } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import axios from 'axios'
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Card } from "@/components/ui/card"
 import ConversationSummary from './ConversationSummary'
@@ -16,6 +15,7 @@ export default function EnhancedChat() {
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [headline, setHeadline] = useState('会話を開始してください')
   const [summary, setSummary] = useState('まだ会話が始まっていません')
+  const [topicData, setTopicData] = useState([])
   const [error, setError] = useState(null)
   const chatEndRef = useRef(null)
 
@@ -49,14 +49,31 @@ export default function EnhancedChat() {
 
   const generateHeadlineAndSummary = async (newMessages) => {
     const conversationContext = newMessages.map(m => `${m.sender}: ${m.text}`).join('\n');
-    const headlinePrompt = `以下の会話の見出しを、新聞の見出しのように簡潔に作成してください（15文字以内）:\n${conversationContext}\n前回の見出し: ${headline}`;
-    const summaryPrompt = `以下の会話の要約を、新聞の要約のように簡潔に作成してください（50文字以内）:\n${conversationContext}\n前回の要約: ${summary}`;
+    const headlinePrompt = `以下の会話の見出しを、新聞の見出しのように簡潔かつ魅力的に作成してください（20文字以内）:\n${conversationContext}\n前回の見出し: ${headline}`;
+    const summaryPrompt = `以下の会話の要約を、新聞の要約のように簡潔かつ洞察に富んだ形で作成してください（100文字以内）。重要なポイントや興味深い展開に焦点を当ててください:\n${conversationContext}\n前回の要約: ${summary}`;
+    const topicAnalysisPrompt = `以下の会話から主要な話題を3つ抽出し、各話題の重要度（パーセンテージ）を算出してください。結果は以下の形式で返してください：
+    話題1: 話題名, 重要度
+    話題2: 話題名, 重要度
+    話題3: 話題名, 重要度
+    会話内容：${conversationContext}`;
 
     try {
-      const newHeadline = await callGPTAPI(headlinePrompt);
-      const newSummary = await callGPTAPI(summaryPrompt);
+      const [newHeadline, newSummary, topicAnalysis] = await Promise.all([
+        callGPTAPI(headlinePrompt),
+        callGPTAPI(summaryPrompt),
+        callGPTAPI(topicAnalysisPrompt)
+      ]);
+
       setHeadline(newHeadline);
       setSummary(newSummary);
+
+      // トピックデータの解析と設定
+      const topics = topicAnalysis.split('\n').map(line => {
+        const [name, importance] = line.split(':')[1].split(',');
+        return { name: name.trim(), value: parseFloat(importance) };
+      });
+      setTopicData(topics);
+
     } catch (error) {
       console.error('Error generating headline and summary:', error);
       setError('見出しと要約の生成中にエラーが発生しました。');
@@ -94,6 +111,7 @@ export default function EnhancedChat() {
     setMessages([]);
     setHeadline('会話を開始してください');
     setSummary('まだ会話が始まっていません');
+    setTopicData([]);
     setError(null);
   }, []);
 
@@ -150,7 +168,7 @@ export default function EnhancedChat() {
         className="w-[40%] bg-gray-800 p-6 flex flex-col space-y-6 rounded-r-lg"
       >
         <Card className="p-6 h-full bg-gray-700 text-white border-none shadow-lg">
-          <ConversationSummary headline={headline} summary={summary} />
+          <ConversationSummary headline={headline} summary={summary} topicData={topicData} />
         </Card>
       </motion.div>
     </motion.div>
