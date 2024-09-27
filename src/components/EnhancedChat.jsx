@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
-import { Send, ChevronLeft, ChevronRight, Maximize2, Minimize2, X, RefreshCw, Search, AlertCircle, Trash2, RotateCcw } from 'lucide-react'
+import { Send, Maximize2, Minimize2, RefreshCw, Search } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import axios from 'axios'
 import { Button } from "@/components/ui/button"
@@ -12,7 +12,6 @@ export default function EnhancedChat() {
   const [messages, setMessages] = useState([])
   const [inputText, setInputText] = useState('')
   const [isFullscreen, setIsFullscreen] = useState(false)
-  const [theme, setTheme] = useState('')
   const [summaries, setSummaries] = useState([])
   const [conversationFlow, setConversationFlow] = useState([])
   const [mindMapData, setMindMapData] = useState({ name: 'Conversation', children: [] })
@@ -59,8 +58,7 @@ export default function EnhancedChat() {
         const summary = await callGPTAPI(summaryPrompt);
         const newSummary = {
           id: Date.now(),
-          text: summary,
-          theme
+          text: summary
         }
         setSummaries(prevSummaries => [...prevSummaries, newSummary])
 
@@ -71,23 +69,18 @@ export default function EnhancedChat() {
         }
 
         setConversationFlow(prevFlow => [...prevFlow, inputText.slice(0, 20)])
-        updateMindMap(summary, theme)
+        updateMindMap(summary)
       } catch (error) {
         console.error('Error in message handling:', error);
         setMessages(prevMessages => [...prevMessages, { id: Date.now(), text: 'Sorry, an error occurred while processing your message.', sender: 'ai' }])
       }
     }
-  }, [inputText, theme])
+  }, [inputText])
 
-  const updateMindMap = (summary, theme) => {
+  const updateMindMap = (summary) => {
     setMindMapData(prevData => {
       const newData = { ...prevData };
-      const themeNode = newData.children.find(child => child.name === theme);
-      if (themeNode) {
-        themeNode.children = [...(themeNode.children || []), { name: summary }];
-      } else {
-        newData.children.push({ name: theme, children: [{ name: summary }] });
-      }
+      newData.children.push({ name: summary });
       return newData;
     });
   };
@@ -96,26 +89,16 @@ export default function EnhancedChat() {
     setMindMapData(prevData => ({ ...prevData }));
   };
 
-
   return (
     <div className={`flex h-screen bg-gray-100 text-gray-800 ${isFullscreen ? 'w-screen' : 'w-[1280px] mx-auto my-8 shadow-xl'}`}>
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col max-w-3xl">
         <motion.header 
           className="bg-white border-b border-gray-200 p-4 flex justify-between items-center"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <div className="flex items-center space-x-4">
-            <h1 className="text-2xl font-semibold">Enhanced Chat</h1>
-            <Input 
-              type="text"
-              value={theme}
-              onChange={(e) => setTheme(e.target.value)}
-              placeholder="Enter theme..."
-              className="w-48"
-            />
-          </div>
+          <h1 className="text-2xl font-semibold">Enhanced Chat</h1>
           <div className="flex space-x-2">
             <Button variant="outline" size="icon" onClick={() => setIsFullscreen(!isFullscreen)}>
               {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
@@ -173,7 +156,6 @@ export default function EnhancedChat() {
             <div className="space-y-2">
               {summaries.map(summary => (
                 <div key={summary.id} className="p-2 bg-white rounded shadow">
-                  <span className="text-xs font-semibold text-blue-500">{summary.theme}</span>
                   <p className="text-sm">{summary.text}</p>
                 </div>
               ))}
