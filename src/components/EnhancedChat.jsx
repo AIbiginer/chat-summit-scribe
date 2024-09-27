@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Card } from "@/components/ui/card"
 import ConversationSummary from './ConversationSummary'
+import ChatMessage from './ChatMessage'
+import ChatInput from './ChatInput'
 
 export default function EnhancedChat() {
   const [messages, setMessages] = useState([])
@@ -22,7 +24,7 @@ export default function EnhancedChat() {
       const response = await axios.post('https://api.openai.com/v1/chat/completions', {
         model: "gpt-3.5-turbo",
         messages: [{ role: "user", content: prompt }],
-        max_tokens: 500, // 増やしてより長い応答を得る
+        max_tokens: 1000,
         n: 1,
         stop: null,
         temperature: 0.7,
@@ -122,45 +124,18 @@ export default function EnhancedChat() {
         <ScrollArea className="flex-1 p-4 space-y-4 bg-black bg-opacity-10">
           <AnimatePresence>
             {messages.map((message) => (
-              <motion.div
-                key={message.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-                className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                <div className={`max-w-[70%] p-3 rounded-lg ${
-                  message.sender === 'user' 
-                    ? 'bg-blue-600 text-white' 
-                    : message.sender === 'system'
-                    ? 'bg-red-600 text-white'
-                    : 'bg-purple-800 text-white'
-                }`}>
-                  {message.text}
-                </div>
-              </motion.div>
+              <ChatMessage key={message.id} message={message} />
             ))}
           </AnimatePresence>
           <div ref={chatEndRef} />
         </ScrollArea>
 
-        <div className="p-4 bg-black bg-opacity-30 rounded-b-lg">
-          <div className="flex space-x-2">
-            <Input
-              type="text"
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-              placeholder="メッセージを入力..."
-              className="flex-1 bg-white bg-opacity-20 text-white placeholder-gray-300 border-none focus:ring-2 focus:ring-white"
-            />
-            <Button onClick={handleSendMessage} className="bg-white text-purple-600 hover:bg-purple-100">
-              <Send className="h-4 w-4" />
-            </Button>
-          </div>
-          {error && <p className="text-red-300 mt-2">{error}</p>}
-        </div>
+        <ChatInput
+          inputText={inputText}
+          setInputText={setInputText}
+          handleSendMessage={handleSendMessage}
+          error={error}
+        />
       </div>
 
       <div className="w-64 bg-black bg-opacity-30 p-4 flex flex-col space-y-4 rounded-r-lg">
