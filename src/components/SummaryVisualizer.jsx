@@ -11,6 +11,11 @@ const SummaryVisualizer = ({ summary, keyPoints, hallucinationCheckResult, onOpt
     setSelectedItem({ content: item, type });
   };
 
+  const handleOptionSelect = (item, action) => {
+    onOptionSelect(item, action);
+    setSelectedItem(null);
+  };
+
   const renderHallucinationStatus = (status, explanation) => (
     <span className={`ml-2 ${status === '✅' ? 'text-green-500' : 'text-red-500'}`}>
       {status}
@@ -101,7 +106,7 @@ const SummaryVisualizer = ({ summary, keyPoints, hallucinationCheckResult, onOpt
       {selectedItem && (
         <OptionSelector 
           item={selectedItem} 
-          onOptionSelect={onOptionSelect}
+          onOptionSelect={handleOptionSelect}
           onClose={() => setSelectedItem(null)}
         />
       )}

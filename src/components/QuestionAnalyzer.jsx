@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2, RefreshCw, Send } from 'lucide-react';
-import { analyzeQuestion, compareAnalysis } from '../utils/apiUtils';
+import { analyzeQuestion, compareAnalysis, generateFollowUpResponse } from '../utils/apiUtils';
 import { performHallucinationCheck } from '../utils/hallucinationCheck';
 import SummaryVisualizer from './SummaryVisualizer';
 import DoubleCheckButton from './DoubleCheckButton';
@@ -23,6 +23,7 @@ export default function QuestionAnalyzer() {
   const [hallucinationCheckResult, setHallucinationCheckResult] = useState(null);
   const [isDoubleChecked, setIsDoubleChecked] = useState(false);
   const [doubleCheckStatus, setDoubleCheckStatus] = useState('未チェック');
+  const [followUpResponse, setFollowUpResponse] = useState(null);
   const queryClient = useQueryClient();
 
   const { isLoading, error, mutate } = useMutation({
@@ -80,6 +81,33 @@ export default function QuestionAnalyzer() {
     },
   });
 
+  const followUpMutation = useMutation({
+    mutationFn: async ({ item, action }) => {
+      let prompt = '';
+      switch (action) {
+        case 'explain':
+          prompt = `以下の内容についてもっと詳しく説明してください：\n${item.content.title || item.content}`;
+          break;
+        case 'example':
+          prompt = `以下の内容に関連する具体的な例を挙げてください：\n${item.content.title || item.content}`;
+          break;
+        case 'question':
+          prompt = `以下の内容について、よくある質問とその回答を3つ挙げてください：\n${item.content.title || item.content}`;
+          break;
+        default:
+          throw new Error('Invalid action');
+      }
+      return await generateFollowUpResponse(prompt);
+    },
+    onSuccess: (data) => {
+      setFollowUpResponse(data);
+    },
+    onError: (error) => {
+      console.error('Error in follow-up:', error);
+      alert(handleApiError(error));
+    },
+  });
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (question.trim()) {
@@ -91,6 +119,10 @@ export default function QuestionAnalyzer() {
     if (question.trim() && analysisResult && !isDoubleChecked) {
       doubleCheckMutation.mutate();
     }
+  };
+
+  const handleOptionSelect = (item, action) => {
+    followUpMutation.mutate({ item, action });
   };
 
   return (
@@ -138,6 +170,7 @@ export default function QuestionAnalyzer() {
                 summary={analysisResult.summary}
                 keyPoints={analysisResult.keyPoints}
                 hallucinationCheckResult={hallucinationCheckResult}
+                onOptionSelect={handleOptionSelect}
               />
               <div className="mt-4 flex items-center justify-between">
                 <DoubleCheckButton 
@@ -148,6 +181,17 @@ export default function QuestionAnalyzer() {
                   ダブルチェック状態: {doubleCheckStatus}
                 </span>
               </div>
+            </motion.div>
+          )}
+          {followUpResponse && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="mt-6 bg-gray-700 p-4 rounded-lg"
+            >
+              <h3 className="text-xl font-semibold mb-2 text-indigo-300">フォローアップ回答</h3>
+              <p className="text-gray-200">{followUpResponse}</p>
             </motion.div>
           )}
         </Card>

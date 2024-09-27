@@ -10,6 +10,11 @@ const OptionSelector = ({ item, onOptionSelect, onClose }) => {
     { text: 'この点について質問がある', action: 'question' },
   ];
 
+  const handleOptionClick = (action) => {
+    onOptionSelect(item, action);
+    onClose();
+  };
+
   return (
     <AnimatePresence>
       <motion.div
@@ -33,13 +38,13 @@ const OptionSelector = ({ item, onOptionSelect, onClose }) => {
               <X size={24} />
             </button>
           </div>
-          <p className="text-gray-300 mb-4">{item.content.title || '選択された項目'}</p>
+          <p className="text-gray-300 mb-4">{item.content.title || item.content}</p>
           <div className="space-y-2">
             {options.map((option, index) => (
               <Button
                 key={index}
                 className="w-full text-left justify-start p-2 bg-gray-700 hover:bg-indigo-600 rounded text-white transition-colors duration-200"
-                onClick={() => onOptionSelect(item, option.action)}
+                onClick={() => handleOptionClick(option.action)}
               >
                 {option.text}
               </Button>
