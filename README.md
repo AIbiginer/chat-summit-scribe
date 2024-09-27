@@ -85,9 +85,15 @@ Mac/Linux: `./update.sh`
 - このアプリケーションはローカル環境での使用を想定しています。
 - AIの回答には常に批判的な目を向け、必要に応じてダブルチェック機能を使用してください。
 
-## 貢献
+## コントリビューション
 
-プルリクエストは歓迎です。大きな変更を行う場合は、まず問題を開いて議論してください。
+プロジェクトへの貢献を歓迎します！フォークを作成し、改善案やバグ修正を提案してください。
+大きな変更を行う場合は、まずIssueを開いて議論することをお勧めします。
+
+## コミュニケーション
+
+質問、提案、バグ報告は、GitHubのIssueを通じて行ってください。
+プロジェクトに関するディスカッションはGitHub Discussionsを活用してください。
 
 ## ライセンス
 
@@ -96,10 +102,6 @@ Mac/Linux: `./update.sh`
 ## 開発状況
 
 このプロジェクトは現在開発中です。バグや未実装の機能がある可能性があります。問題を発見した場合は、Issueを開いてご報告ください。
-
-## 連絡先
-
-質問や提案がある場合は、[Issueを開く](https://github.com/yourusername/insightsphere/issues)か、[メール](mailto:your.email@example.com)でお問い合わせください。
 
 ---
 
@@ -192,7 +194,13 @@ This script performs a Git repository pull, updates dependencies, and checks the
 
 ## Contributing
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+Contributions to the project are welcome! Feel free to fork the repository and propose improvements or bug fixes.
+For major changes, please open an Issue first to discuss what you would like to change.
+
+## Communication
+
+For questions, suggestions, or bug reports, please open an Issue on GitHub.
+Use GitHub Discussions for project-related discussions.
 
 ## License
 
@@ -201,7 +209,3 @@ This project is released under the MIT License. See the [LICENSE](LICENSE) file 
 ## Development Status
 
 This project is currently under development. There may be bugs or unimplemented features. If you encounter any issues, please open an Issue to report them.
-
-## Contact
-
-For questions or suggestions, please [open an Issue](https://github.com/yourusername/insightsphere/issues) or [email us](mailto:your.email@example.com).
