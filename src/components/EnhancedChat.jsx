@@ -2,12 +2,15 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, RefreshCw, Trash2 } from 'lucide-react';
+import { Input } from "@/components/ui/input";
+import { Loader2, RefreshCw, Trash2, Send } from 'lucide-react';
 import { generateTopicsAndSummary } from '../utils/apiUtils';
 import TabSection from './TabSection';
+import ChatHistory from './ChatHistory';
 
 export default function EnhancedChat() {
   const [messages, setMessages] = useState([]);
+  const [inputText, setInputText] = useState('');
   const queryClient = useQueryClient();
 
   const { data: chatData, isLoading, error, refetch } = useQuery({
@@ -34,6 +37,14 @@ export default function EnhancedChat() {
     queryClient.removeQueries(['chatData']);
   }, [queryClient]);
 
+  const handleSendMessage = useCallback(() => {
+    if (inputText.trim()) {
+      const newMessage = { id: Date.now(), sender: 'user', text: inputText.trim() };
+      setMessages(prevMessages => [...prevMessages, newMessage]);
+      setInputText('');
+    }
+  }, [inputText]);
+
   useEffect(() => {
     const interval = setInterval(() => {
       if (messages.length > 0) {
@@ -51,6 +62,7 @@ export default function EnhancedChat() {
           AI Chat Summary & Topics
         </h1>
         <div className="space-y-6">
+          <ChatHistory messages={messages} />
           <TabSection
             headline={chatData?.headline}
             summary={chatData?.summary}
@@ -58,6 +70,19 @@ export default function EnhancedChat() {
             isLoading={isLoading || updateMutation.isLoading}
             error={error || updateMutation.error}
           />
+          <div className="flex space-x-2">
+            <Input
+              type="text"
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+              placeholder="メッセージを入力..."
+              className="flex-1 bg-gray-700 text-white placeholder-gray-400 border-none focus:ring-2 focus:ring-purple-500"
+            />
+            <Button onClick={handleSendMessage} className="bg-purple-600 hover:bg-purple-700">
+              <Send className="h-4 w-4" />
+            </Button>
+          </div>
           <div className="flex justify-center space-x-4 mt-6">
             <Button
               onClick={handleUpdate}
