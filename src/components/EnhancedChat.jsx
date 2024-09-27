@@ -5,7 +5,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
-import { VirtualList } from 'react-tiny-virtual-list';
 import { callGPTAPI, generateHeadlineAndSummary } from '../utils/apiUtils';
 
 const ConversationSummary = lazy(() => import('./ConversationSummary'));
@@ -48,19 +47,11 @@ export default function EnhancedChat() {
   }, [queryClient]);
 
   const memoizedChatMessages = useMemo(() => (
-    <VirtualList
-      width="100%"
-      height={400}
-      itemCount={messages.length}
-      itemSize={50}
-      renderItem={({ index, style }) => (
-        <div style={style}>
-          <Suspense fallback={<div>Loading...</div>}>
-            <ChatMessage key={messages[index].id} message={messages[index]} />
-          </Suspense>
-        </div>
-      )}
-    />
+    messages.map(message => (
+      <Suspense key={message.id} fallback={<div>Loading...</div>}>
+        <ChatMessage message={message} />
+      </Suspense>
+    ))
   ), [messages]);
 
   return (
