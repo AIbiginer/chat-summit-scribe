@@ -24,7 +24,7 @@ export default function EnhancedChat() {
       const response = await axios.post('https://api.openai.com/v1/chat/completions', {
         model: "gpt-3.5-turbo",
         messages: [{ role: "user", content: prompt }],
-        max_tokens: 1000,
+        max_tokens: 2000,
         n: 1,
         stop: null,
         temperature: 0.7,
@@ -102,26 +102,26 @@ export default function EnhancedChat() {
   }, [messages]);
 
   return (
-    <div className={`flex h-screen bg-gradient-to-br from-indigo-500 to-purple-600 text-white ${isFullscreen ? 'w-screen' : 'w-[1024px] mx-auto my-8 rounded-lg shadow-2xl'}`}>
+    <div className={`flex h-screen bg-gradient-to-br from-gray-900 to-black text-white ${isFullscreen ? 'w-screen' : 'w-[1024px] mx-auto my-8 rounded-lg shadow-2xl'}`}>
       <div className="flex-1 flex flex-col max-w-2xl">
         <motion.header 
-          className="bg-black bg-opacity-30 p-4 flex justify-between items-center rounded-t-lg"
+          className="bg-gray-800 p-4 flex justify-between items-center rounded-t-lg"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
         >
           <h1 className="text-2xl font-bold">AI チャット</h1>
           <div className="flex space-x-2">
-            <Button variant="outline" size="icon" onClick={() => setIsFullscreen(!isFullscreen)} className="bg-transparent border-white text-white hover:bg-white hover:text-black">
+            <Button variant="outline" size="icon" onClick={() => setIsFullscreen(!isFullscreen)} className="bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white">
               {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
             </Button>
-            <Button variant="outline" size="icon" onClick={handleRefresh} className="bg-transparent border-white text-white hover:bg-white hover:text-black">
+            <Button variant="outline" size="icon" onClick={handleRefresh} className="bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white">
               <RefreshCw className="h-4 w-4" />
             </Button>
           </div>
         </motion.header>
 
-        <ScrollArea className="flex-1 p-4 space-y-4 bg-black bg-opacity-10">
+        <ScrollArea className="flex-1 p-4 space-y-4 bg-gray-900">
           <AnimatePresence>
             {messages.map((message) => (
               <ChatMessage key={message.id} message={message} />
@@ -138,8 +138,8 @@ export default function EnhancedChat() {
         />
       </div>
 
-      <div className="w-64 bg-black bg-opacity-30 p-4 flex flex-col space-y-4 rounded-r-lg">
-        <Card className="p-4 h-full bg-white bg-opacity-10 text-white border-none">
+      <div className="w-64 bg-gray-800 p-4 flex flex-col space-y-4 rounded-r-lg">
+        <Card className="p-4 h-full bg-gray-700 text-white border-none">
           <ConversationSummary headline={headline} summary={summary} />
         </Card>
       </div>

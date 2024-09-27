@@ -16,10 +16,10 @@ const ChatMessage = ({ message }) => {
       <div
         className={`max-w-[70%] p-3 rounded-lg ${
           isUser
-            ? 'bg-blue-600 text-white'
+            ? 'bg-gray-700 text-white'
             : isSystem
-            ? 'bg-red-600 text-white'
-            : 'bg-purple-800 text-white'
+            ? 'bg-red-900 text-white'
+            : 'bg-gray-800 text-white'
         } shadow-md`}
       >
         <p className="text-sm md:text-base">{message.text}</p>
