@@ -1,9 +1,8 @@
 import React, { useState, useCallback, useMemo, lazy, Suspense } from 'react';
 import { Maximize2, Minimize2, RefreshCw } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
 import { callGPTAPI, generateHeadlineAndSummary } from '../utils/apiUtils';
 
@@ -81,9 +80,9 @@ export default function EnhancedChat() {
           </div>
         </motion.header>
 
-        <ScrollArea className="flex-1 p-6 space-y-6 bg-gray-900">
+        <div className="flex-1 p-6 space-y-6 bg-gray-900 overflow-y-auto">
           {memoizedChatMessages}
-        </ScrollArea>
+        </div>
 
         <Suspense fallback={<div>Loading...</div>}>
           <ChatInput
@@ -99,9 +98,9 @@ export default function EnhancedChat() {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="w-[40%] bg-gray-800 p-6 flex flex-col space-y-6 rounded-r-lg"
+        className="w-[40%] bg-gray-800 p-6 flex flex-col space-y-6 rounded-r-lg overflow-y-auto"
       >
-        <Card className="p-6 h-full bg-gray-700 text-white border-none shadow-lg">
+        <Card className="p-6 bg-gray-700 text-white border-none shadow-lg">
           <Suspense fallback={<div>Loading...</div>}>
             {error ? (
               <div className="text-red-500">エラーが発生しました: {error.message}</div>
