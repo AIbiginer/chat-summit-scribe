@@ -47,12 +47,13 @@ export default function EnhancedChat() {
 
   return (
     <div className="flex flex-col h-screen bg-gradient-to-br from-gray-900 to-black text-white">
-      <div className="flex-1 overflow-hidden">
-        <div className="h-full flex flex-col lg:flex-row">
-          <div className={`flex-1 ${activeTab === 'chat' ? 'block' : 'hidden lg:block'} lg:max-w-[60%]`}>
+      <MobileTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+      <div className="flex-1 overflow-hidden mt-14">
+        <div className="h-full flex flex-col">
+          <div className={`flex-1 ${activeTab === 'chat' ? 'block' : 'hidden'}`}>
             <ChatHistory messages={messages} />
           </div>
-          <div className={`lg:w-[40%] ${activeTab !== 'chat' ? 'block' : 'hidden lg:block'}`}>
+          <div className={`flex-1 overflow-y-auto ${activeTab === 'summary' ? 'block' : 'hidden'}`}>
             <TabSection
               headline={chatData?.headline}
               summary={chatData?.summary}
@@ -62,9 +63,6 @@ export default function EnhancedChat() {
             />
           </div>
         </div>
-      </div>
-      <div className="lg:hidden">
-        <MobileTabs activeTab={activeTab} setActiveTab={setActiveTab} />
       </div>
       <div className="p-4 bg-gray-800">
         <Suspense fallback={<div>Loading...</div>}>
