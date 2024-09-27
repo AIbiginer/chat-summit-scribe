@@ -62,3 +62,26 @@ export const generateFollowUpResponse = async (prompt) => {
     throw new Error('フォローアップレスポンスの生成中にエラーが発生しました。しばらくしてからもう一度お試しください。');
   }
 };
+
+export const summarizeQuestionAndAnswer = async (question, answer) => {
+  const prompt = `以下の質問と回答を要約してください。要約は簡潔で、すぐに読める程度の詳細さにしてください。結果は以下のJSON形式で返してください：
+
+{
+  "questionSummary": "質問の要約（100文字以内）",
+  "answerSummary": "回答の要約（200文字以内）"
+}
+
+質問：
+${question}
+
+回答：
+${answer}`;
+
+  try {
+    const result = await callGPTAPI(prompt);
+    return JSON.parse(result);
+  } catch (error) {
+    console.error('Error summarizing question and answer:', error);
+    throw new Error('要約の生成中にエラーが発生しました。しばらくしてからもう一度お試しください。');
+  }
+};
