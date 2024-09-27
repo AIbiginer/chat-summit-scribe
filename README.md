@@ -16,19 +16,27 @@
 - OpenAI APIキー
 - Git
 
-## インストール手順
+## プロジェクトのクローンとセットアップ
 
-### Windows:
-1. `install.bat` をダブルクリックして実行します。
-2. プロンプトに従ってOpenAI APIキーを入力します。
+1. リポジトリをクローンします：
+   ```
+   git clone https://github.com/your-username/your-repo-name.git
+   cd your-repo-name
+   ```
 
-### Mac/Linux:
-1. ターミナルを開き、プロジェクトディレクトリに移動します。
-2. 以下のコマンドを実行します：
+2. 依存関係をインストールし、プロジェクトをセットアップします：
+
+   ### Windows:
+   ```
+   install.bat
+   ```
+
+   ### Mac/Linux:
    ```
    chmod +x install.sh
    ./install.sh
    ```
+
 3. プロンプトに従ってOpenAI APIキーを入力します。
 
 ## アプリケーションの起動
