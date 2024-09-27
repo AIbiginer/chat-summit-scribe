@@ -12,6 +12,10 @@ import LoadingIndicator from './LoadingIndicator';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { InfoIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { sanitizeInput, validateInput, handleApiError } from '../utils/securityUtils';
+import { z } from 'zod';
+
+const questionSchema = z.string().min(1).max(500);
 
 export default function QuestionAnalyzer() {
   const [question, setQuestion] = useState('');
@@ -23,7 +27,9 @@ export default function QuestionAnalyzer() {
 
   const { isLoading, error, mutate } = useMutation({
     mutationFn: async (q) => {
-      const result = await analyzeQuestion(q);
+      const sanitizedQuestion = sanitizeInput(q);
+      validateInput(questionSchema, sanitizedQuestion);
+      const result = await analyzeQuestion(sanitizedQuestion);
       setIsDoubleChecked(false);
       setDoubleCheckStatus('未チェック');
       return result;
@@ -34,12 +40,18 @@ export default function QuestionAnalyzer() {
       const checkResult = await performHallucinationCheck(data);
       setHallucinationCheckResult(checkResult);
     },
+    onError: (error) => {
+      console.error('Error in mutation:', error);
+      alert(handleApiError(error));
+    },
   });
 
   const doubleCheckMutation = useMutation({
     mutationFn: async () => {
       setDoubleCheckStatus('チェック中...');
-      const newResult = await analyzeQuestion(question);
+      const sanitizedQuestion = sanitizeInput(question);
+      validateInput(questionSchema, sanitizedQuestion);
+      const newResult = await analyzeQuestion(sanitizedQuestion);
       const comparison = await compareAnalysis(analysisResult, newResult);
       return { newResult, comparison };
     },
@@ -61,6 +73,10 @@ export default function QuestionAnalyzer() {
         setDoubleCheckStatus('変更なし');
       }
       setIsDoubleChecked(true);
+    },
+    onError: (error) => {
+      console.error('Error in double check:', error);
+      alert(handleApiError(error));
     },
   });
 
