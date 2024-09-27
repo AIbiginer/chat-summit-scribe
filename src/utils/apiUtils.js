@@ -46,6 +46,9 @@ export const generateHeadlineAndSummary = async (messages) => {
     let parsedTopicData;
     try {
       parsedTopicData = JSON.parse(topicAnalysis);
+      if (!Array.isArray(parsedTopicData)) {
+        parsedTopicData = Object.values(parsedTopicData);
+      }
     } catch (error) {
       console.error('Error parsing topic analysis:', error);
       parsedTopicData = []; // Fallback to empty array if parsing fails

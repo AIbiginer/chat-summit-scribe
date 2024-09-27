@@ -4,8 +4,8 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recha
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#0088FE'];
 
 const SummaryVisualizer = ({ topicData }) => {
-  if (!topicData || topicData.length === 0) {
-    return <div className="text-gray-400">トピックデータがありません。</div>;
+  if (!topicData || !Array.isArray(topicData) || topicData.length === 0) {
+    return <div className="text-gray-400">トピックデータが利用できません。</div>;
   }
 
   const chartData = topicData.map((topic, index) => ({

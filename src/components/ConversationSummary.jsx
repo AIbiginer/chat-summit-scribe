@@ -18,7 +18,7 @@ const ConversationSummary = ({ headline, summary, topicData }) => {
       <div>
         <h3 className="text-xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">話題分析</h3>
         <ScrollArea className="h-64">
-          <SummaryVisualizer topicData={topicData} />
+          <SummaryVisualizer topicData={topicData || []} />
         </ScrollArea>
       </div>
     </div>
