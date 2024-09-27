@@ -16,7 +16,7 @@ export default function EnhancedChat() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const queryClient = useQueryClient();
 
-  const { data: chatData, isLoading, error } = useQuery({
+  const { data: chatData, isLoading, error, refetch } = useQuery({
     queryKey: ['chatData', messages],
     queryFn: () => generateHeadlineAndSummary(messages),
     enabled: messages.length > 0,
@@ -29,7 +29,7 @@ export default function EnhancedChat() {
     onSuccess: (aiResponse) => {
       const aiMessage = { id: Date.now(), text: aiResponse, sender: 'ai' };
       setMessages(prev => [...prev, aiMessage]);
-      queryClient.invalidateQueries(['chatData']);
+      refetch(); // 要約を更新
     },
   });
 

@@ -31,18 +31,19 @@ export const callGPTAPI = async (prompt) => {
 
 export const generateHeadlineAndSummary = async (messages) => {
   const conversationContext = messages.map(m => `${m.sender}: ${m.text}`).join('\n');
-  const headlinePrompt = `次の会話の見出しを、教科書の章タイトルのように簡潔かつ分かりやすく20文字以内で作成してください:\n${conversationContext}`;
+  const headlinePrompt = `次の会話の見出しを、教科書の章タイトルのように簡潔かつ分かりやすく20文字以内で作成してください。最新の話題を反映させてください:\n${conversationContext}`;
   const summaryPrompt = `次の会話の要約を、以下の点に注意して100文字以内で作成してください:
 1. 会話の主要なポイントを捉える
 2. ユーザーとAIの対話の流れを反映する
 3. 重要な情報や結論を強調する
 4. 平易な言葉を使用する
+5. 最新の話題を反映させる
 会話内容:\n${conversationContext}`;
-  const topicAnalysisPrompt = `次の会話から主要な話題を3つ抽出し、各話題の重要度（%）を算出してください。結果を以下の形式のJSONで返してください:
+  const topicAnalysisPrompt = `次の会話から主要な話題を3つ抽出し、各話題の簡単な説明を15文字以内で作成してください。結果を以下の形式のJSONで返してください:
 [
-  {"name": "話題1", "value": 40, "description": "話題1の簡単な説明（15文字以内）"},
-  {"name": "話題2", "value": 35, "description": "話題2の簡単な説明（15文字以内）"},
-  {"name": "話題3", "value": 25, "description": "話題3の簡単な説明（15文字以内）"}
+  {"name": "話題1", "description": "話題1の簡単な説明"},
+  {"name": "話題2", "description": "話題2の簡単な説明"},
+  {"name": "話題3", "description": "話題3の簡単な説明"}
 ]
 会話内容:\n${conversationContext}`;
 
