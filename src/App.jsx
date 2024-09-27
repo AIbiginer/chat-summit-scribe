@@ -6,8 +6,14 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import EnhancedChat from "./components/EnhancedChat";
 
-// Create a client
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60000, // 1分間のステール時間
+      cacheTime: 300000, // 5分間のキャッシュ時間
+    },
+  },
+});
 
 const App = () => (
   <React.StrictMode>

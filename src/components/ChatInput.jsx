@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Send } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-const ChatInput = ({ inputText, setInputText, handleSendMessage, error }) => {
+const ChatInput = memo(({ inputText, setInputText, handleSendMessage, error }) => {
   return (
     <div className="p-6 bg-gray-800 rounded-b-lg">
       <div className="flex space-x-3">
@@ -22,6 +22,8 @@ const ChatInput = ({ inputText, setInputText, handleSendMessage, error }) => {
       {error && <p className="text-red-400 mt-3 text-sm">{error}</p>}
     </div>
   );
-};
+});
+
+ChatInput.displayName = 'ChatInput';
 
 export default ChatInput;
