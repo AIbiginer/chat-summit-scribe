@@ -22,7 +22,7 @@ export default function EnhancedChat() {
   const callGPTAPI = async (prompt) => {
     try {
       const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-        model: "gpt-4",
+        model: "gpt-4", // Updated to use GPT-4
         messages: [{ role: "user", content: prompt }],
         max_tokens: 2000,
         n: 1,
