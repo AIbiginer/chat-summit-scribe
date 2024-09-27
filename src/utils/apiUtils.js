@@ -29,7 +29,7 @@ export const callGPTAPI = async (prompt) => {
   }
 };
 
-export const analyzeQuestion = async (question, previousResult = null) => {
+export const analyzeQuestion = async (question) => {
   let prompt = `以下の質問を分析し、簡潔で正確な要約と重要ポイントを生成してください。結果は以下のJSON形式で返してください：
 
 {
@@ -46,19 +46,43 @@ export const analyzeQuestion = async (question, previousResult = null) => {
 質問：
 ${question}`;
 
-  if (previousResult) {
-    prompt += `\n\n以前の分析結果：
-${JSON.stringify(previousResult, null, 2)}
-
-上記の以前の分析結果を参考に、より正確で詳細な分析を行ってください。`;
-  }
-
   try {
     const result = await callGPTAPI(prompt);
     return JSON.parse(result);
   } catch (error) {
     console.error('Error analyzing question:', error);
     throw new Error('質問の分析中にエラーが発生しました。しばらくしてからもう一度お試しください。');
+  }
+};
+
+export const compareAnalysis = async (oldResult, newResult) => {
+  const prompt = `以下の2つの分析結果を比較し、重要な違いがあるかどうかを判断してください。結果はJSON形式で返してください。
+
+古い分析結果:
+${JSON.stringify(oldResult, null, 2)}
+
+新しい分析結果:
+${JSON.stringify(newResult, null, 2)}
+
+返すべきJSON形式:
+{
+  "hasDifferences": true/false,
+  "differences": [
+    {
+      "type": "summary/keyPoint",
+      "description": "違いの説明"
+    }
+  ]
+}
+
+違いがない場合は、"hasDifferences": false と "differences": [] を返してください。`;
+
+  try {
+    const result = await callGPTAPI(prompt);
+    return JSON.parse(result);
+  } catch (error) {
+    console.error('Error comparing analysis:', error);
+    throw new Error('分析結果の比較中にエラーが発生しました。');
   }
 };
 

@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2, RefreshCw, Send } from 'lucide-react';
-import { analyzeQuestion, generateFollowUpResponse } from '../utils/apiUtils';
+import { analyzeQuestion, compareAnalysis } from '../utils/apiUtils';
 import SummaryVisualizer from './SummaryVisualizer';
 import DoubleCheckButton from './DoubleCheckButton';
 import LoadingIndicator from './LoadingIndicator';
@@ -12,13 +12,16 @@ import LoadingIndicator from './LoadingIndicator';
 export default function QuestionAnalyzer() {
   const [question, setQuestion] = useState('');
   const [analysisResult, setAnalysisResult] = useState(null);
+  const [isDoubleChecked, setIsDoubleChecked] = useState(false);
+  const [doubleCheckStatus, setDoubleCheckStatus] = useState('未チェック');
   const queryClient = useQueryClient();
 
   const { isLoading, error, mutate } = useMutation({
     mutationFn: async (q) => {
-      const initialResult = await analyzeQuestion(q);
-      // Immediately perform a double-check
-      return await analyzeQuestion(q, initialResult);
+      const result = await analyzeQuestion(q);
+      setIsDoubleChecked(false);
+      setDoubleCheckStatus('未チェック');
+      return result;
     },
     onSuccess: (data) => {
       setAnalysisResult(data);
@@ -26,14 +29,22 @@ export default function QuestionAnalyzer() {
     },
   });
 
-  const followUpMutation = useMutation({
-    mutationFn: generateFollowUpResponse,
-    onSuccess: (data) => {
-      const updatedResult = {
-        ...analysisResult,
-        followUp: data
-      };
-      setAnalysisResult(updatedResult);
+  const doubleCheckMutation = useMutation({
+    mutationFn: async () => {
+      setDoubleCheckStatus('チェック中...');
+      const newResult = await analyzeQuestion(question);
+      const comparison = await compareAnalysis(analysisResult, newResult);
+      return { newResult, comparison };
+    },
+    onSuccess: ({ newResult, comparison }) => {
+      if (comparison.hasDifferences) {
+        setAnalysisResult(newResult);
+        queryClient.setQueryData(['analysisResult'], newResult);
+        setDoubleCheckStatus('更新済み');
+      } else {
+        setDoubleCheckStatus('変更なし');
+      }
+      setIsDoubleChecked(true);
     },
   });
 
@@ -44,14 +55,9 @@ export default function QuestionAnalyzer() {
     }
   };
 
-  const handleOptionSelect = (item, action) => {
-    const prompt = `${action}について: ${item.content.title || item.content}`;
-    followUpMutation.mutate(prompt);
-  };
-
   const handleDoubleCheck = () => {
-    if (question.trim()) {
-      mutate(question);
+    if (question.trim() && analysisResult) {
+      doubleCheckMutation.mutate();
     }
   };
 
@@ -82,15 +88,13 @@ export default function QuestionAnalyzer() {
             <SummaryVisualizer
               summary={analysisResult.summary}
               keyPoints={analysisResult.keyPoints}
-              onOptionSelect={handleOptionSelect}
             />
-            {analysisResult.followUp && (
-              <div className="mt-6 p-4 bg-gray-700 rounded-lg">
-                <h3 className="text-xl font-semibold mb-2 text-purple-300">フォローアップ</h3>
-                <p className="text-gray-300">{analysisResult.followUp}</p>
-              </div>
-            )}
-            <DoubleCheckButton onDoubleCheck={handleDoubleCheck} />
+            <div className="mt-4 flex items-center justify-between">
+              <DoubleCheckButton onDoubleCheck={handleDoubleCheck} disabled={doubleCheckMutation.isLoading} />
+              <span className="text-sm text-gray-400">
+                ダブルチェック状態: {doubleCheckStatus}
+              </span>
+            </div>
           </>
         )}
       </Card>
