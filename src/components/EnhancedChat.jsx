@@ -1,13 +1,12 @@
-'use client'
-
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { Send, ChevronLeft, ChevronRight, Maximize2, Minimize2, X, RefreshCw, Search, AlertCircle, Trash2, RotateCcw } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import axios from 'axios'
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
-// ... (既存のインターフェースはそのまま)
-
-const themes: Theme[] = [
+const themes = [
   { name: 'General Conversation', categories: ['Topics', 'Questions', 'Insights'] },
   { name: 'Technical Support', categories: ['Issues', 'Solutions', 'Follow-ups'] },
   { name: 'Creative Writing', categories: ['Characters', 'Plot Points', 'Settings'] },
@@ -15,7 +14,13 @@ const themes: Theme[] = [
 ]
 
 export default function EnhancedChat() {
-  // ... (既存のstate定義はそのまま)
+  const [messages, setMessages] = useState([])
+  const [inputText, setInputText] = useState('')
+  const [isFullscreen, setIsFullscreen] = useState(false)
+  const [selectedTheme, setSelectedTheme] = useState(null)
+  const [summaries, setSummaries] = useState([])
+  const [conversationFlow, setConversationFlow] = useState([])
+  const chatEndRef = useRef(null)
 
   const callGPTAPI = async (prompt) => {
     try {
@@ -40,13 +45,13 @@ export default function EnhancedChat() {
 
   const handleSendMessage = useCallback(async () => {
     if (inputText.trim()) {
-      const newMessage: Message = { id: Date.now(), text: inputText, sender: 'user' }
+      const newMessage = { id: Date.now(), text: inputText, sender: 'user' }
       setMessages(prevMessages => [...prevMessages, newMessage])
       setInputText('')
       
       try {
         const aiResponse = await callGPTAPI(inputText);
-        const aiMessage: Message = { 
+        const aiMessage = { 
           id: Date.now(), 
           text: aiResponse, 
           sender: 'ai'
@@ -77,13 +82,13 @@ export default function EnhancedChat() {
     }
   }, [inputText, selectedTheme])
 
-  // ... (残りの関数とJSXはそのまま)
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages])
 
   return (
     <div className={`flex h-screen bg-gray-100 text-gray-800 ${isFullscreen ? 'w-screen' : 'w-[1280px] mx-auto my-8 shadow-xl'}`}>
-      {/* Main Chat Area */}
       <div className="flex-1 flex flex-col">
-        {/* Header */}
         <motion.header 
           className="bg-white border-b border-gray-200 p-4 flex justify-between items-center"
           initial={{ opacity: 0, y: -20 }}
@@ -92,15 +97,86 @@ export default function EnhancedChat() {
         >
           <div className="flex items-center space-x-4">
             <h1 className="text-2xl font-semibold">Enhanced Chat</h1>
-            {/* ... (残りのヘッダー内容) */}
+            <select 
+              value={selectedTheme?.name || ''} 
+              onChange={(e) => setSelectedTheme(themes.find(t => t.name === e.target.value))}
+              className="border rounded p-1"
+            >
+              <option value="">Select Theme</option>
+              {themes.map(theme => (
+                <option key={theme.name} value={theme.name}>{theme.name}</option>
+              ))}
+            </select>
           </div>
-          {/* ... (残りのヘッダー内容) */}
+          <div className="flex space-x-2">
+            <Button variant="outline" size="icon" onClick={() => setIsFullscreen(!isFullscreen)}>
+              {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+            </Button>
+            <Button variant="outline" size="icon">
+              <RefreshCw className="h-4 w-4" />
+            </Button>
+            <Button variant="outline" size="icon">
+              <Search className="h-4 w-4" />
+            </Button>
+          </div>
         </motion.header>
 
-        {/* ... (残りのJSXコンテンツ) */}
+        <ScrollArea className="flex-1 p-4 space-y-4">
+          <AnimatePresence>
+            {messages.map((message, index) => (
+              <motion.div
+                key={message.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
+                <div className={`max-w-[70%] p-3 rounded-lg ${message.sender === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}>
+                  {message.text}
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+          <div ref={chatEndRef} />
+        </ScrollArea>
+
+        <div className="p-4 bg-white border-t border-gray-200">
+          <div className="flex space-x-2">
+            <Input
+              type="text"
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+              placeholder="Type your message..."
+              className="flex-1"
+            />
+            <Button onClick={handleSendMessage}>
+              <Send className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
       </div>
 
-      {/* ... (サイドバーと他のコンポーネント) */}
+      <div className="w-64 bg-gray-50 border-l border-gray-200 p-4 flex flex-col">
+        <h2 className="text-lg font-semibold mb-4">Summaries</h2>
+        <ScrollArea className="flex-1">
+          {summaries.map(summary => (
+            <div key={summary.id} className="mb-2 p-2 bg-white rounded shadow">
+              <span className="text-xs font-semibold text-blue-500">{summary.category}</span>
+              <p className="text-sm">{summary.text}</p>
+            </div>
+          ))}
+        </ScrollArea>
+        <div className="mt-4">
+          <h3 className="text-md font-semibold mb-2">Conversation Flow</h3>
+          <div className="flex flex-wrap gap-1">
+            {conversationFlow.map((item, index) => (
+              <span key={index} className="text-xs bg-gray-200 rounded px-1">{item}</span>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
