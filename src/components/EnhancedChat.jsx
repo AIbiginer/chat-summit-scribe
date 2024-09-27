@@ -108,7 +108,7 @@ export default function EnhancedChat() {
       transition={{ duration: 0.5 }}
       className={`flex h-screen bg-gradient-to-br from-gray-900 to-black text-white ${isFullscreen ? 'w-screen' : 'w-[1024px] mx-auto my-8 rounded-lg shadow-2xl'}`}
     >
-      <div className="flex-1 flex flex-col max-w-[60%]"> {/* AIチャット側の幅を60%に調整 */}
+      <div className="flex-1 flex flex-col max-w-[60%]">
         <motion.header 
           className="bg-gray-800 p-6 flex justify-between items-center rounded-t-lg"
           initial={{ opacity: 0, y: -20 }}
@@ -147,7 +147,7 @@ export default function EnhancedChat() {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="w-[40%] bg-gray-800 p-6 flex flex-col space-y-6 rounded-r-lg" {/* 見出しと要約の幅を40%に調整 */}
+        className="w-[40%] bg-gray-800 p-6 flex flex-col space-y-6 rounded-r-lg"
       >
         <Card className="p-6 h-full bg-gray-700 text-white border-none shadow-lg">
           <ConversationSummary headline={headline} summary={summary} />
