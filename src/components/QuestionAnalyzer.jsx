@@ -11,6 +11,7 @@ import DoubleCheckButton from './DoubleCheckButton';
 import LoadingIndicator from './LoadingIndicator';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { InfoIcon } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function QuestionAnalyzer() {
   const [question, setQuestion] = useState('');
@@ -77,53 +78,64 @@ export default function QuestionAnalyzer() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 to-indigo-900 text-white p-4 overflow-y-auto">
-      <Card className="flex-1 bg-gray-800 p-6 rounded-lg shadow-lg overflow-hidden">
-        <h1 className="text-3xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-fuchsia-500">
-          質問分析ツール
-        </h1>
-        <Alert className="mb-4 bg-indigo-900 border-indigo-700">
-          <InfoIcon className="h-4 w-4 text-indigo-400" />
-          <AlertTitle className="text-indigo-300">AIの回答には注意が必要です</AlertTitle>
-          <AlertDescription className="text-gray-300">
-            AIは時として誤った情報を生成することがあります。精度を高めるため、ハルシネーションチェック結果を確認し、必要に応じてダブルチェック機能をお使いください。
-          </AlertDescription>
-        </Alert>
-        <form onSubmit={handleSubmit} className="mb-6">
-          <div className="flex space-x-2">
-            <Input
-              type="text"
-              value={question}
-              onChange={(e) => setQuestion(e.target.value)}
-              placeholder="質問を入力してください..."
-              className="flex-1 bg-gray-700 text-white placeholder-gray-400 border-none focus:ring-2 focus:ring-indigo-500"
-            />
-            <Button type="submit" disabled={isLoading} className="bg-indigo-600 hover:bg-indigo-700">
-              {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-            </Button>
-          </div>
-        </form>
-        {error && <p className="text-red-500 mb-4">エラー: {error.message}</p>}
-        {isLoading && <LoadingIndicator />}
-        {analysisResult && (
-          <>
-            <SummaryVisualizer
-              summary={analysisResult.summary}
-              keyPoints={analysisResult.keyPoints}
-              hallucinationCheckResult={hallucinationCheckResult}
-            />
-            <div className="mt-4 flex items-center justify-between">
-              <DoubleCheckButton 
-                onDoubleCheck={handleDoubleCheck} 
-                disabled={doubleCheckMutation.isLoading || isDoubleChecked}
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-indigo-900 text-white p-4 overflow-y-auto">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="max-w-4xl mx-auto"
+      >
+        <Card className="bg-gray-800 p-6 rounded-lg shadow-lg overflow-hidden">
+          <h1 className="text-3xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-fuchsia-500">
+            質問分析ツール
+          </h1>
+          <Alert className="mb-4 bg-indigo-900 border-indigo-700">
+            <InfoIcon className="h-4 w-4 text-indigo-400" />
+            <AlertTitle className="text-indigo-300">AIの回答には注意が必要です</AlertTitle>
+            <AlertDescription className="text-gray-300">
+              AIは時として誤った情報を生成することがあります。精度を高めるため、ハルシネーションチェック結果を確認し、必要に応じてダブルチェック機能をお使いください。
+            </AlertDescription>
+          </Alert>
+          <form onSubmit={handleSubmit} className="mb-6">
+            <div className="flex space-x-2">
+              <Input
+                type="text"
+                value={question}
+                onChange={(e) => setQuestion(e.target.value)}
+                placeholder="質問を入力してください..."
+                className="flex-1 bg-gray-700 text-white placeholder-gray-400 border-none focus:ring-2 focus:ring-indigo-500"
               />
-              <span className="text-sm text-gray-400">
-                ダブルチェック状態: {doubleCheckStatus}
-              </span>
+              <Button type="submit" disabled={isLoading} className="bg-indigo-600 hover:bg-indigo-700">
+                {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+              </Button>
             </div>
-          </>
-        )}
-      </Card>
+          </form>
+          {error && <p className="text-red-500 mb-4">エラー: {error.message}</p>}
+          {isLoading && <LoadingIndicator />}
+          {analysisResult && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <SummaryVisualizer
+                summary={analysisResult.summary}
+                keyPoints={analysisResult.keyPoints}
+                hallucinationCheckResult={hallucinationCheckResult}
+              />
+              <div className="mt-4 flex items-center justify-between">
+                <DoubleCheckButton 
+                  onDoubleCheck={handleDoubleCheck} 
+                  disabled={doubleCheckMutation.isLoading || isDoubleChecked}
+                />
+                <span className="text-sm text-gray-400">
+                  ダブルチェック状態: {doubleCheckStatus}
+                </span>
+              </div>
+            </motion.div>
+          )}
+        </Card>
+      </motion.div>
     </div>
   );
 }

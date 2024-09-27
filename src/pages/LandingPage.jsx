@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FileText, Zap, LayoutDashboard } from 'lucide-react';
 import FeatureCard from '../components/FeatureCard';
+import AnimatedBackground from '../components/AnimatedBackground';
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -15,17 +16,18 @@ const LandingPage = () => {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-900 to-indigo-900 text-white p-8 overflow-y-auto">
+    <div className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
+      <AnimatedBackground />
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="max-w-4xl w-full text-center"
+        className="z-10 max-w-4xl w-full text-center px-4"
       >
         <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-fuchsia-500">
           インサイトスフィア
         </h1>
-        <p className="text-xl md:text-2xl mb-12 leading-relaxed text-gray-300">
+        <p className="text-xl md:text-2xl mb-12 leading-relaxed text-gray-200">
           AI駆動の会話分析＆洞察抽出ツール
         </p>
         <motion.div 
