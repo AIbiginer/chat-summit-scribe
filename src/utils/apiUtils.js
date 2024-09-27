@@ -42,6 +42,7 @@ export const analyzeQuestion = async (question) => {
 }
 
 質問の内容を正確に理解し、適切な要約と重要ポイントを抽出してください。
+また、前回の分析とは異なる視点や新しい洞察を含めるよう努めてください。
 
 質問：
 ${question}`;
