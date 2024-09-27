@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Loader2, RefreshCw, Trash2, Send } from 'lucide-react';
 import { generateTopicsAndSummary } from '../utils/apiUtils';
 import TabSection from './TabSection';
-import ChatHistory from './ChatHistory';
 
 export default function EnhancedChat() {
   const [messages, setMessages] = useState([]);
@@ -45,16 +44,6 @@ export default function EnhancedChat() {
     }
   }, [inputText]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (messages.length > 0) {
-        refetch();
-      }
-    }, 60000); // Update every minute
-
-    return () => clearInterval(interval);
-  }, [messages, refetch]);
-
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 to-black text-white p-4 overflow-y-auto">
       <Card className="flex-1 bg-gray-800 p-6 rounded-lg shadow-lg overflow-y-auto">
@@ -62,7 +51,6 @@ export default function EnhancedChat() {
           AI Chat Summary & Topics
         </h1>
         <div className="space-y-6">
-          <ChatHistory messages={messages} />
           <TabSection
             headline={chatData?.headline}
             summary={chatData?.summary}
