@@ -1,67 +1,67 @@
 # AI-Powered Chat Application
 
-This project is an advanced AI-driven chat application featuring real-time conversation summaries and topic tracking.
+リアルタイムの会話要約と話題追跡機能を備えた先進的なAI駆動チャットアプリケーションです。
 
-## Features
+## 主な機能
 
-- Real-time AI-powered chat
-- Dynamic conversation summaries
-- Current topic tracking
-- Responsive design
+- リアルタイムAIチャット
+- 動的な会話要約
+- 現在の話題追跡
+- レスポンシブデザイン
 
-## Quick Start
+## クイックスタート
 
-1. Clone the repository:
+1. リポジトリをクローン：
    ```
    git clone https://github.com/Shintar00/chat-summit-scribe.git
    cd chat-summit-scribe
    ```
 
-2. Install dependencies:
+2. 依存関係をインストール：
    ```
    npm install
    ```
 
-3. Set up environment variables:
-   Create a `.env` file in the root directory and add your OpenAI API key:
+3. 環境変数の設定：
+   ルートディレクトリに`.env`ファイルを作成し、OpenAI APIキーを追加：
    ```
    VITE_OPENAI_API_KEY=your_api_key_here
    ```
 
-4. Start the development server:
+4. 開発サーバーを起動：
    ```
    npm run dev
    ```
 
-5. Open the application in your browser using the URL provided in the terminal.
+5. ターミナルに表示されたURLをブラウザで開いてアプリケーションにアクセス。
 
-## How to Use
+## 使用方法
 
-1. Click "Start Chat" on the landing page to enter the chat interface.
-2. Type your message and press Enter or click the send button.
-3. The AI will respond, and the conversation summary and current topic will update in real-time.
+1. ランディングページの「チャットを開始」をクリックしてチャットインターフェースに入る。
+2. メッセージを入力してEnterキーを押すか、送信ボタンをクリック。
+3. AIが応答し、会話の要約と現在の話題がリアルタイムで更新されます。
 
-## Updating the Application
+## アプリケーションの更新
 
-1. Pull the latest changes:
+1. 最新の変更をプル：
    ```
    git pull origin main
    ```
 
-2. Update dependencies:
+2. 依存関係を更新：
    ```
    npm install
    ```
 
-3. Restart the development server:
+3. 開発サーバーを再起動：
    ```
    npm run dev
    ```
 
-## Contributing
+## 貢献
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+貢献は大歓迎です！お気軽にプルリクエストを送ってください。
 
-## License
+## ライセンス
 
-This project is licensed under the MIT License.
+このプロジェクトはMITライセンスの下で公開されています。
