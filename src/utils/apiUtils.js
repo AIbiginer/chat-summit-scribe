@@ -1,5 +1,4 @@
 import axios from 'axios';
-import rateLimit from 'express-rate-limit';
 import { sanitizeInput, validateInput } from './securityUtils';
 import { z } from 'zod';
 
@@ -15,23 +14,14 @@ const axiosInstance = axios.create({
   timeout: 30000
 });
 
-// APIリクエストの制限を設定
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15分
-  max: 100 // IPアドレスごとに100リクエスト
-});
-
-// 入力のバリデーションスキーマ
+// Input validation schema
 const promptSchema = z.string().min(1).max(1000);
 
 export const callGPTAPI = async (prompt) => {
   try {
-    // 入力のバリデーションとサニタイズ
+    // Input validation and sanitization
     const sanitizedPrompt = sanitizeInput(prompt);
     validateInput(promptSchema, sanitizedPrompt);
-
-    // レート制限の適用
-    await new Promise((resolve) => limiter(null, null, resolve));
 
     const response = await axiosInstance.post('', {
       model: "gpt-3.5-turbo",
@@ -42,7 +32,7 @@ export const callGPTAPI = async (prompt) => {
       temperature: 0.5,
     });
 
-    // レスポンスのサニタイズ
+    // Response sanitization
     const sanitizedResponse = sanitizeInput(response.data.choices[0].message.content.trim());
     return sanitizedResponse;
   } catch (error) {
