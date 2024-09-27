@@ -7,18 +7,11 @@ import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import ConversationMindMap from './ConversationMindMap'
 
-const themes = [
-  { name: 'General Conversation', categories: ['Topics', 'Questions', 'Insights'] },
-  { name: 'Technical Support', categories: ['Issues', 'Solutions', 'Follow-ups'] },
-  { name: 'Creative Writing', categories: ['Characters', 'Plot Points', 'Settings'] },
-  { name: 'Project Management', categories: ['Tasks', 'Deadlines', 'Resources'] },
-]
-
 export default function EnhancedChat() {
   const [messages, setMessages] = useState([])
   const [inputText, setInputText] = useState('')
   const [isFullscreen, setIsFullscreen] = useState(false)
-  const [selectedTheme, setSelectedTheme] = useState(null)
+  const [theme, setTheme] = useState('')
   const [summaries, setSummaries] = useState([])
   const [conversationFlow, setConversationFlow] = useState([])
   const [mindMapData, setMindMapData] = useState({ name: 'Conversation', children: [] })
@@ -62,11 +55,10 @@ export default function EnhancedChat() {
         
         const summaryPrompt = `Summarize the following message in one sentence: "${inputText}"`;
         const summary = await callGPTAPI(summaryPrompt);
-        const category = selectedTheme ? selectedTheme.categories[Math.floor(Math.random() * selectedTheme.categories.length)] : 'General'
         const newSummary = {
           id: Date.now(),
           text: summary,
-          category
+          theme
         }
         setSummaries(prevSummaries => [...prevSummaries, newSummary])
 
@@ -77,29 +69,28 @@ export default function EnhancedChat() {
         }
 
         setConversationFlow(prevFlow => [...prevFlow, inputText.slice(0, 20)])
-        updateMindMap(summary, category)
+        updateMindMap(summary, theme)
       } catch (error) {
         console.error('Error in message handling:', error);
         setMessages(prevMessages => [...prevMessages, { id: Date.now(), text: 'Sorry, an error occurred while processing your message.', sender: 'ai' }])
       }
     }
-  }, [inputText, selectedTheme])
+  }, [inputText, theme])
 
-  const updateMindMap = (summary, category) => {
+  const updateMindMap = (summary, theme) => {
     setMindMapData(prevData => {
       const newData = { ...prevData };
-      const categoryNode = newData.children.find(child => child.name === category);
-      if (categoryNode) {
-        categoryNode.children = [...(categoryNode.children || []), { name: summary }];
+      const themeNode = newData.children.find(child => child.name === theme);
+      if (themeNode) {
+        themeNode.children = [...(themeNode.children || []), { name: summary }];
       } else {
-        newData.children.push({ name: category, children: [{ name: summary }] });
+        newData.children.push({ name: theme, children: [{ name: summary }] });
       }
       return newData;
     });
   };
 
   const handleMindMapUpdate = () => {
-    // This function can be expanded to perform more complex updates if needed
     setMindMapData(prevData => ({ ...prevData }));
   };
 
@@ -118,16 +109,13 @@ export default function EnhancedChat() {
         >
           <div className="flex items-center space-x-4">
             <h1 className="text-2xl font-semibold">Enhanced Chat</h1>
-            <select 
-              value={selectedTheme?.name || ''} 
-              onChange={(e) => setSelectedTheme(themes.find(t => t.name === e.target.value))}
-              className="border rounded p-1"
-            >
-              <option value="">Select Theme</option>
-              {themes.map(theme => (
-                <option key={theme.name} value={theme.name}>{theme.name}</option>
-              ))}
-            </select>
+            <Input 
+              type="text"
+              value={theme}
+              onChange={(e) => setTheme(e.target.value)}
+              placeholder="Enter theme..."
+              className="w-48"
+            />
           </div>
           <div className="flex space-x-2">
             <Button variant="outline" size="icon" onClick={() => setIsFullscreen(!isFullscreen)}>
@@ -184,7 +172,7 @@ export default function EnhancedChat() {
         <ScrollArea className="flex-1">
           {summaries.map(summary => (
             <div key={summary.id} className="mb-2 p-2 bg-white rounded shadow">
-              <span className="text-xs font-semibold text-blue-500">{summary.category}</span>
+              <span className="text-xs font-semibold text-blue-500">{summary.theme}</span>
               <p className="text-sm">{summary.text}</p>
             </div>
           ))}
