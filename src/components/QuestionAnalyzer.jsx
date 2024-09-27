@@ -51,7 +51,7 @@ export default function QuestionAnalyzer() {
         {analysisResult && (
           <SummaryVisualizer
             summary={analysisResult.summary}
-            mainTopics={analysisResult.mainTopics}
+            keyPoints={analysisResult.keyPoints}
           />
         )}
       </Card>

@@ -30,14 +30,14 @@ export const callGPTAPI = async (prompt) => {
 };
 
 export const analyzeQuestion = async (question) => {
-  const prompt = `以下の質問を分析し、簡潔な要約と主要な話題を生成してください。結果は以下のJSON形式で返してください：
+  const prompt = `以下の質問を分析し、簡潔な要約と重要ポイントを生成してください。結果は以下のJSON形式で返してください：
 
 {
   "summary": "質問の要約（200文字以内）",
-  "mainTopics": [
-    {"title": "主要な話題1（30文字以内）", "description": "説明（50文字以内）"},
-    {"title": "主要な話題2（30文字以内）", "description": "説明（50文字以内）"},
-    {"title": "主要な話題3（30文字以内）", "description": "説明（50文字以内）"}
+  "keyPoints": [
+    {"title": "重要ポイント1（30文字以内）", "description": "説明（50文字以内）"},
+    {"title": "重要ポイント2（30文字以内）", "description": "説明（50文字以内）"},
+    {"title": "重要ポイント3（30文字以内）", "description": "説明（50文字以内）"}
   ]
 }
 
