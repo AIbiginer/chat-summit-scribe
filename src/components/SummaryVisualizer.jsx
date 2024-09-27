@@ -1,5 +1,5 @@
 import React from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#0088FE'];
 
@@ -8,18 +8,26 @@ const SummaryVisualizer = ({ topicData }) => {
     return <div className="text-gray-400">トピックデータが利用できません。</div>;
   }
 
-  const chartData = topicData.map((topic, index) => ({
-    name: topic.name,
-    value: topic.value,
-    color: COLORS[index % COLORS.length]
-  }));
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      return (
+        <div className="bg-gray-700 p-2 rounded shadow-lg">
+          <p className="font-bold">{data.name}</p>
+          <p>重要度: {data.value}%</p>
+          <p className="text-sm">{data.description}</p>
+        </div>
+      );
+    }
+    return null;
+  };
 
   return (
     <div className="space-y-4">
       <ResponsiveContainer width="100%" height={200}>
         <PieChart>
           <Pie
-            data={chartData}
+            data={topicData}
             cx="50%"
             cy="50%"
             labelLine={false}
@@ -27,31 +35,21 @@ const SummaryVisualizer = ({ topicData }) => {
             fill="#8884d8"
             dataKey="value"
           >
-            {chartData.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.color} />
+            {topicData.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>
-          <Tooltip />
-          <Legend />
+          <Tooltip content={<CustomTooltip />} />
         </PieChart>
       </ResponsiveContainer>
-      {topicData.map((topic, index) => (
-        <div key={index} className="bg-gray-700 rounded-lg p-4 shadow-md">
-          <h3 className="text-lg font-semibold text-purple-300 mb-2">{topic.name}</h3>
-          <p className="text-gray-300">関連度: {topic.value}%</p>
-          <p className="text-sm text-gray-400 mt-2">{topic.description}</p>
-          {topic.keywords && (
-            <div className="mt-3">
-              <span className="text-xs font-semibold text-gray-500">関連キーワード: </span>
-              {topic.keywords.map((keyword, idx) => (
-                <span key={idx} className="inline-block bg-gray-600 text-gray-300 rounded-full px-2 py-1 text-xs font-semibold mr-2 mb-2">
-                  {keyword}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-      ))}
+      <div className="space-y-2">
+        {topicData.map((topic, index) => (
+          <div key={index} className="bg-gray-700 rounded-lg p-3 shadow-md">
+            <h4 className="text-lg font-semibold text-purple-300 mb-1">{topic.name}</h4>
+            <p className="text-sm text-gray-300">{topic.description}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
