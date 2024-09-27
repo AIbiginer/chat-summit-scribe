@@ -12,6 +12,10 @@ AIを活用したリアルタイム会話要約と話題追跡機能を備えた
 - レスポンシブデザイン
 - 多言語対応
 
+## 非営利プロジェクト
+
+このプロジェクトは非営利目的で開発されており、マネタイズの意図はありません。教育目的や研究目的での利用を想定しています。
+
 ## 必要条件
 
 - Node.js (バージョン14以上)
@@ -118,6 +122,10 @@ An advanced chat application featuring AI-powered real-time conversation summari
 - Follow-up question generation
 - Responsive design
 - Multi-language support
+
+## Non-Profit Project
+
+This project is developed for non-profit purposes and is not intended for monetization. It is designed for educational and research purposes.
 
 ## Requirements
 
