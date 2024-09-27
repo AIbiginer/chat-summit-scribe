@@ -16,12 +16,13 @@ export default function EnhancedChat() {
   const [conversationFlow, setConversationFlow] = useState([])
   const [currentTopic, setCurrentTopic] = useState('会話を開始してください')
   const [conversationSummary, setConversationSummary] = useState('まだ会話が始まっていません')
+  const [error, setError] = useState(null)
   const chatEndRef = useRef(null)
 
   const callGPTAPI = async (prompt) => {
     try {
       const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-        model: "gpt-4o-mini",
+        model: "gpt-3.5-turbo",
         messages: [{ role: "user", content: prompt }],
         max_tokens: 150,
         n: 1,
@@ -29,14 +30,20 @@ export default function EnhancedChat() {
         temperature: 0.7,
       }, {
         headers: {
-          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+          'Authorization': `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
           'Content-Type': 'application/json',
         }
       });
       return response.data.choices[0].message.content.trim();
     } catch (error) {
       console.error('Error calling GPT API:', error);
-      return 'Sorry, I encountered an error while processing your request.';
+      if (error.response) {
+        throw new Error(`API error: ${error.response.status} - ${error.response.data.error.message}`);
+      } else if (error.request) {
+        throw new Error('No response received from the API. Please check your internet connection.');
+      } else {
+        throw new Error(`Error setting up the request: ${error.message}`);
+      }
     }
   }
 
@@ -45,6 +52,7 @@ export default function EnhancedChat() {
       const newMessage = { id: Date.now(), text: inputText, sender: 'user' }
       setMessages(prevMessages => [...prevMessages, newMessage])
       setInputText('')
+      setError(null)
       
       try {
         const aiResponse = await callGPTAPI(inputText);
@@ -72,7 +80,8 @@ export default function EnhancedChat() {
         setConversationFlow(prevFlow => [...prevFlow, inputText.slice(0, 20)])
       } catch (error) {
         console.error('Error in message handling:', error);
-        setMessages(prevMessages => [...prevMessages, { id: Date.now(), text: 'Sorry, an error occurred while processing your message.', sender: 'ai' }])
+        setError(error.message);
+        setMessages(prevMessages => [...prevMessages, { id: Date.now(), text: `エラーが発生しました: ${error.message}`, sender: 'system' }])
       }
     }
   }, [inputText])
@@ -111,7 +120,13 @@ export default function EnhancedChat() {
                 transition={{ duration: 0.3 }}
                 className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
               >
-                <div className={`max-w-[70%] p-3 rounded-lg ${message.sender === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}>
+                <div className={`max-w-[70%] p-3 rounded-lg ${
+                  message.sender === 'user' 
+                    ? 'bg-blue-500 text-white' 
+                    : message.sender === 'system'
+                    ? 'bg-red-500 text-white'
+                    : 'bg-gray-200'
+                }`}>
                   {message.text}
                 </div>
               </motion.div>
@@ -134,6 +149,7 @@ export default function EnhancedChat() {
               <Send className="h-4 w-4" />
             </Button>
           </div>
+          {error && <p className="text-red-500 mt-2">{error}</p>}
         </div>
       </div>
 
