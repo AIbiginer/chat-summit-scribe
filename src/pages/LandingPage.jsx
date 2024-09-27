@@ -16,10 +16,10 @@ const LandingPage = () => {
         className="max-w-4xl w-full text-center"
       >
         <h1 className="text-6xl font-bold mb-6 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
-          AI駆動の対話と洞察
+          AIチャット＆リアルタイム要約
         </h1>
         <p className="text-2xl mb-12 leading-relaxed text-gray-300">
-          AIとチャットし、リアルタイムで会話の要約と洞察を得る。<br />
+          AIとチャットしながら、会話の要約と洞察をリアルタイムで取得。<br />
           あなたの対話を次のレベルへ。
         </p>
         <motion.div 
@@ -31,9 +31,9 @@ const LandingPage = () => {
           <h2 className="text-3xl font-semibold mb-6 text-purple-300">主な機能</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { icon: <MessageSquare className="w-12 h-12 mb-4 text-purple-400" />, text: "AIとのインテリジェントな対話" },
-              { icon: <FileText className="w-12 h-12 mb-4 text-pink-400" />, text: "リアルタイムの会話要約" },
-              { icon: <Zap className="w-12 h-12 mb-4 text-yellow-400" />, text: "主要な話題の可視化" }
+              { icon: <MessageSquare className="w-12 h-12 mb-4 text-purple-400" />, text: "AIとスマートな会話" },
+              { icon: <FileText className="w-12 h-12 mb-4 text-pink-400" />, text: "リアルタイム会話要約" },
+              { icon: <Zap className="w-12 h-12 mb-4 text-yellow-400" />, text: "話題の可視化" }
             ].map(({ icon, text }, index) => (
               <motion.div 
                 key={index}
