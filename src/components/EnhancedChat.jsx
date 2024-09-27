@@ -19,8 +19,9 @@ export default function EnhancedChat() {
 
   const callGPTAPI = async (prompt) => {
     try {
-      const response = await axios.post('https://api.openai.com/v1/engines/davinci-codex/completions', {
-        prompt: prompt,
+      const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+        model: "gpt-4-mini",
+        messages: [{ role: "user", content: prompt }],
         max_tokens: 150,
         n: 1,
         stop: null,
@@ -31,7 +32,7 @@ export default function EnhancedChat() {
           'Content-Type': 'application/json',
         }
       });
-      return response.data.choices[0].text.trim();
+      return response.data.choices[0].message.content.trim();
     } catch (error) {
       console.error('Error calling GPT API:', error);
       return 'Sorry, I encountered an error while processing your request.';
