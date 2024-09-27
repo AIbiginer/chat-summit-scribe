@@ -1,20 +1,26 @@
 import axios from 'axios';
 
+const API_ENDPOINT = 'https://api.openai.com/v1/chat/completions';
+const API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
+
+const axiosInstance = axios.create({
+  baseURL: API_ENDPOINT,
+  headers: {
+    'Authorization': `Bearer ${API_KEY}`,
+    'Content-Type': 'application/json',
+  },
+  timeout: 10000
+});
+
 export const callGPTAPI = async (prompt) => {
   try {
-    const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+    const response = await axiosInstance.post('', {
       model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: prompt }],
       max_tokens: 150,
       n: 1,
       stop: null,
       temperature: 0.7,
-    }, {
-      headers: {
-        'Authorization': `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      timeout: 10000
     });
     return response.data.choices[0].message.content.trim();
   } catch (error) {

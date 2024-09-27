@@ -21,6 +21,8 @@ export default function EnhancedChat() {
     queryKey: ['chatData', messages],
     queryFn: () => generateHeadlineAndSummary(messages),
     enabled: messages.length > 0,
+    staleTime: 30000, // 30秒のステール時間
+    cacheTime: 300000, // 5分のキャッシュ時間
   });
 
   const sendMessageMutation = useMutation({

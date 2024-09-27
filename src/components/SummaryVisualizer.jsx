@@ -1,12 +1,40 @@
 import React from 'react';
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+
+const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#0088FE'];
 
 const SummaryVisualizer = ({ topicData }) => {
   if (!topicData || topicData.length === 0) {
     return <div className="text-gray-400">トピックデータがありません。</div>;
   }
 
+  const chartData = topicData.map((topic, index) => ({
+    name: topic.name,
+    value: topic.value,
+    color: COLORS[index % COLORS.length]
+  }));
+
   return (
     <div className="space-y-4">
+      <ResponsiveContainer width="100%" height={200}>
+        <PieChart>
+          <Pie
+            data={chartData}
+            cx="50%"
+            cy="50%"
+            labelLine={false}
+            outerRadius={80}
+            fill="#8884d8"
+            dataKey="value"
+          >
+            {chartData.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={entry.color} />
+            ))}
+          </Pie>
+          <Tooltip />
+          <Legend />
+        </PieChart>
+      </ResponsiveContainer>
       {topicData.map((topic, index) => (
         <div key={index} className="bg-gray-800 rounded-lg p-4 shadow-md">
           <h3 className="text-lg font-semibold text-purple-300 mb-2">{topic.name}</h3>
