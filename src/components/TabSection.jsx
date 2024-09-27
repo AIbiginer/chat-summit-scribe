@@ -1,13 +1,18 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Loader2 } from 'lucide-react';
 import CollapsibleSection from './CollapsibleSection';
 
 const TabSection = ({ headline, summary, mainTopics, isLoading, error }) => {
-  if (isLoading) return <div className="text-center p-4">Loading...</div>;
+  if (isLoading) return (
+    <div className="flex justify-center items-center h-64">
+      <Loader2 className="h-8 w-8 animate-spin text-purple-500" />
+    </div>
+  );
   if (error) return <div className="text-red-500 p-4">Error: {error.message}</div>;
 
   return (
-    <div className="space-y-4 p-4">
+    <div className="space-y-6">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

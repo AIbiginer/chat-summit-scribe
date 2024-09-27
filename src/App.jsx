@@ -3,7 +3,6 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import LandingPage from "./pages/LandingPage";
 import EnhancedChat from "./components/EnhancedChat";
 import { isLocalEnvironment } from "./utils/environmentCheck";
 
@@ -32,8 +31,7 @@ const App = () => {
           <Toaster />
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/chat" element={<EnhancedChat />} />
+              <Route path="/" element={<EnhancedChat />} />
             </Routes>
           </BrowserRouter>
         </TooltipProvider>
