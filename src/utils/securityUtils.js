@@ -1,16 +1,8 @@
 import { z } from 'zod';
+import DOMPurify from 'dompurify';
 
 export const sanitizeInput = (input) => {
-  return input.replace(/[&<>"']/g, (match) => {
-    const replacements = {
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#x27;'
-    };
-    return replacements[match];
-  });
+  return DOMPurify.sanitize(input);
 };
 
 export const validateInput = (schema, data) => {
@@ -25,13 +17,10 @@ export const validateInput = (schema, data) => {
 export const handleApiError = (error) => {
   console.error('API Error:', error);
   if (error.response) {
-    // サーバーからのレスポンスがあるエラー
-    return '申し訳ありませんが、サーバーエラーが発生しました。';
+    return `APIエラー: ${error.response.status} - ${error.response.data.error.message}`;
   } else if (error.request) {
-    // リクエストは送信されたがレスポンスがない
-    return 'サーバーに接続できません。インターネット接続を確認してください。';
+    return 'ネットワークエラー: サーバーに接続できません';
   } else {
-    // リクエストの設定中に何らかのエラーが発生
-    return '予期せぬエラーが発生しました。もう一度お試しください。';
+    return '予期せぬエラーが発生しました';
   }
 };
