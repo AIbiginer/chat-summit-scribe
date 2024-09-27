@@ -1,56 +1,53 @@
 import React from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { motion } from 'framer-motion';
 
-const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#0088FE'];
-
-const SummaryVisualizer = ({ topicData }) => {
-  if (!topicData || !Array.isArray(topicData) || topicData.length === 0) {
-    return <div className="text-gray-400">トピックデータが利用できません。</div>;
-  }
-
-  const CustomTooltip = ({ active, payload }) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload;
-      return (
-        <div className="bg-gray-700 p-2 rounded shadow-lg">
-          <p className="font-bold">{data.name}</p>
-          <p>重要度: {data.value}%</p>
-          <p className="text-sm">{data.description}</p>
-        </div>
-      );
-    }
-    return null;
-  };
-
+const SummaryVisualizer = ({ summary, mainTopics }) => {
   return (
-    <div className="space-y-4">
-      <ResponsiveContainer width="100%" height={200}>
-        <PieChart>
-          <Pie
-            data={topicData}
-            cx="50%"
-            cy="50%"
-            labelLine={false}
-            outerRadius={80}
-            fill="#8884d8"
-            dataKey="value"
-          >
-            {topicData.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+    <motion.div 
+      className="space-y-6"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2, duration: 0.5 }}
+      >
+        <h2 className="text-2xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
+          要約
+        </h2>
+        <p className="text-gray-300 leading-relaxed">
+          {summary}
+        </p>
+      </motion.div>
+      
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4, duration: 0.5 }}
+      >
+        <h3 className="text-xl font-semibold mb-3 text-purple-300">主要な話題</h3>
+        {mainTopics && mainTopics.length > 0 ? (
+          <div className="space-y-4">
+            {mainTopics.map((topic, index) => (
+              <motion.div 
+                key={index}
+                className="bg-gray-700 rounded-lg p-4 shadow-md"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.1 * index, duration: 0.3 }}
+              >
+                <h4 className="text-lg font-medium text-pink-400 mb-1">{topic.title}</h4>
+                <p className="text-sm text-gray-300">{topic.description}</p>
+              </motion.div>
             ))}
-          </Pie>
-          <Tooltip content={<CustomTooltip />} />
-        </PieChart>
-      </ResponsiveContainer>
-      <div className="space-y-2">
-        {topicData.map((topic, index) => (
-          <div key={index} className="bg-gray-700 rounded-lg p-3 shadow-md">
-            <h4 className="text-lg font-semibold text-purple-300 mb-1">{topic.name}</h4>
-            <p className="text-sm text-gray-300">{topic.description}</p>
           </div>
-        ))}
-      </div>
-    </div>
+        ) : (
+          <p className="text-gray-400">トピックデータが利用できません。</p>
+        )}
+      </motion.div>
+    </motion.div>
   );
 };
 
