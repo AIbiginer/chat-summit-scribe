@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { callGPTAPI, generateHeadlineAndSummary } from '../utils/apiUtils';
+import { callGPTAPI, generateTopicsAndSummary } from '../utils/apiUtils';
 
 const ConversationSummary = lazy(() => import('./ConversationSummary'));
 const ChatInput = lazy(() => import('./ChatInput'));
@@ -18,7 +18,7 @@ export default function EnhancedChat() {
 
   const { data: chatData, isLoading, error, refetch } = useQuery({
     queryKey: ['chatData', messages],
-    queryFn: () => generateHeadlineAndSummary(messages),
+    queryFn: () => generateTopicsAndSummary(messages),
     enabled: messages.length > 0,
     staleTime: 30000,
     cacheTime: 300000,
@@ -106,9 +106,9 @@ export default function EnhancedChat() {
               <div className="text-red-500">エラーが発生しました: {error.message}</div>
             ) : (
               <ConversationSummary 
-                headline={chatData?.headline} 
-                summary={chatData?.summary} 
-                topicData={chatData?.topicData} 
+                currentTopic={chatData?.currentTopic}
+                summary={chatData?.summary}
+                mainTopics={chatData?.mainTopics}
               />
             )}
           </Suspense>

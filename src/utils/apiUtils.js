@@ -29,49 +29,29 @@ export const callGPTAPI = async (prompt) => {
   }
 };
 
-export const generateHeadlineAndSummary = async (messages) => {
+export const generateTopicsAndSummary = async (messages) => {
   const conversationContext = messages.map(m => `${m.sender}: ${m.text}`).join('\n');
-  const headlinePrompt = `次の会話の見出しを、教科書の章タイトルのように簡潔かつ分かりやすく20文字以内で作成してください。最新の話題を反映させてください:\n${conversationContext}`;
-  const summaryPrompt = `次の会話の要約を、以下の点に注意して100文字以内で作成してください:
-1. 会話の主要なポイントを捉える
-2. ユーザーとAIの対話の流れを反映する
-3. 重要な情報や結論を強調する
-4. 平易な言葉を使用する
-5. 最新の話題を反映させる
-会話内容:\n${conversationContext}`;
-  const topicAnalysisPrompt = `次の会話から主要な話題を3つ抽出し、各話題の簡単な説明を15文字以内で作成してください。結果を以下の形式のJSONで返してください:
-[
-  {"name": "話題1", "description": "話題1の簡単な説明"},
-  {"name": "話題2", "description": "話題2の簡単な説明"},
-  {"name": "話題3", "description": "話題3の簡単な説明"}
-]
-会話内容:\n${conversationContext}`;
+  const prompt = `次の会話を分析し、以下の形式で結果を返してください：
+
+1. 現在のトピック：会話の最新のトピックを1つ、15文字以内で
+2. 会話の要約：会話全体の要約を、100文字以内で
+3. 主要な話題：会話から抽出した3つの主要な話題を、各15文字以内で
+
+結果は以下のJSON形式で返してください：
+{
+  "currentTopic": "現在のトピック",
+  "summary": "会話の要約",
+  "mainTopics": ["話題1", "話題2", "話題3"]
+}
+
+会話内容：
+${conversationContext}`;
 
   try {
-    const [headline, summary, topicAnalysis] = await Promise.all([
-      callGPTAPI(headlinePrompt),
-      callGPTAPI(summaryPrompt),
-      callGPTAPI(topicAnalysisPrompt)
-    ]);
-
-    let parsedTopicData;
-    try {
-      parsedTopicData = JSON.parse(topicAnalysis);
-      if (!Array.isArray(parsedTopicData)) {
-        parsedTopicData = Object.values(parsedTopicData);
-      }
-    } catch (error) {
-      console.error('Error parsing topic analysis:', error);
-      parsedTopicData = []; // Fallback to empty array if parsing fails
-    }
-
-    return {
-      headline,
-      summary,
-      topicData: parsedTopicData
-    };
+    const result = await callGPTAPI(prompt);
+    return JSON.parse(result);
   } catch (error) {
-    console.error('Error generating headline and summary:', error);
-    throw new Error('見出しと要約の生成中にエラーが発生しました。しばらくしてからもう一度お試しください。');
+    console.error('Error generating topics and summary:', error);
+    throw new Error('トピックと要約の生成中にエラーが発生しました。しばらくしてからもう一度お試しください。');
   }
 };
