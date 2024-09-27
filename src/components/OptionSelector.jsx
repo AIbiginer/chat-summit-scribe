@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { X } from 'lucide-react';
+import { Button } from "@/components/ui/button";
 
 const OptionSelector = ({ item, onOptionSelect, onClose }) => {
   const options = [
@@ -18,7 +19,7 @@ const OptionSelector = ({ item, onOptionSelect, onClose }) => {
     >
       <div className="bg-gray-800 p-6 rounded-lg shadow-xl max-w-md w-full">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-xl font-semibold text-purple-300">オプションを選択</h3>
+          <h3 className="text-xl font-semibold text-indigo-300">オプションを選択</h3>
           <button onClick={onClose} className="text-gray-400 hover:text-white">
             <X size={24} />
           </button>
@@ -26,13 +27,13 @@ const OptionSelector = ({ item, onOptionSelect, onClose }) => {
         <p className="text-gray-300 mb-4">{item.content.title || '選択された項目'}</p>
         <div className="space-y-2">
           {options.map((option, index) => (
-            <button
+            <Button
               key={index}
-              className="w-full text-left p-2 bg-gray-700 hover:bg-gray-600 rounded text-white"
+              className="w-full text-left justify-start p-2 bg-gray-700 hover:bg-indigo-600 rounded text-white"
               onClick={() => onOptionSelect(item, option.action)}
             >
               {option.text}
-            </button>
+            </Button>
           ))}
         </div>
       </div>

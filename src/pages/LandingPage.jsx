@@ -9,24 +9,24 @@ const LandingPage = () => {
   const navigate = useNavigate();
 
   const features = [
-    { icon: <FileText className="w-10 h-10 text-purple-400" />, title: "リアルタイム要約", description: "会話の要点を即座に把握" },
-    { icon: <Zap className="w-10 h-10 text-pink-400" />, title: "トピック分析", description: "重要なポイントを自動で抽出" },
-    { icon: <LayoutDashboard className="w-10 h-10 text-yellow-400" />, title: "インタラクティブダッシュボード", description: "直感的な情報管理" },
+    { icon: <FileText className="w-10 h-10 text-indigo-400" />, title: "リアルタイム要約", description: "会話の本質を瞬時に把握" },
+    { icon: <Zap className="w-10 h-10 text-fuchsia-400" />, title: "トピック分析", description: "重要ポイントを自動抽出" },
+    { icon: <LayoutDashboard className="w-10 h-10 text-amber-400" />, title: "直感的ダッシュボード", description: "情報を効率的に管理" },
   ];
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-900 to-black text-white p-8 overflow-y-auto">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-900 to-indigo-900 text-white p-8 overflow-y-auto">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
         className="max-w-4xl w-full text-center"
       >
-        <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
-          InsightSphere
+        <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-fuchsia-500">
+          インサイトスフィア
         </h1>
         <p className="text-xl md:text-2xl mb-12 leading-relaxed text-gray-300">
-          AIパワードの会話要約＆重要ポイント分析ツール
+          AI駆動の会話分析＆洞察抽出ツール
         </p>
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
@@ -44,9 +44,9 @@ const LandingPage = () => {
         >
           <Button 
             onClick={() => navigate('/analyzer')}
-            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white transition-all duration-300 text-xl px-12 py-4 rounded-full shadow-lg"
+            className="bg-gradient-to-r from-indigo-600 to-fuchsia-600 hover:from-indigo-700 hover:to-fuchsia-700 text-white transition-all duration-300 text-xl px-12 py-4 rounded-full shadow-lg"
           >
-            始める
+            分析を始める
           </Button>
         </motion.div>
       </motion.div>
