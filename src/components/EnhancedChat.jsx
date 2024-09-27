@@ -5,6 +5,7 @@ import axios from 'axios'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import ConversationMindMap from './ConversationMindMap'
 
 const themes = [
   { name: 'General Conversation', categories: ['Topics', 'Questions', 'Insights'] },
@@ -20,6 +21,7 @@ export default function EnhancedChat() {
   const [selectedTheme, setSelectedTheme] = useState(null)
   const [summaries, setSummaries] = useState([])
   const [conversationFlow, setConversationFlow] = useState([])
+  const [mindMapData, setMindMapData] = useState({ name: 'Conversation', children: [] })
   const chatEndRef = useRef(null)
 
   const callGPTAPI = async (prompt) => {
@@ -75,12 +77,31 @@ export default function EnhancedChat() {
         }
 
         setConversationFlow(prevFlow => [...prevFlow, inputText.slice(0, 20)])
+        updateMindMap(summary, category)
       } catch (error) {
         console.error('Error in message handling:', error);
         setMessages(prevMessages => [...prevMessages, { id: Date.now(), text: 'Sorry, an error occurred while processing your message.', sender: 'ai' }])
       }
     }
   }, [inputText, selectedTheme])
+
+  const updateMindMap = (summary, category) => {
+    setMindMapData(prevData => {
+      const newData = { ...prevData };
+      const categoryNode = newData.children.find(child => child.name === category);
+      if (categoryNode) {
+        categoryNode.children = [...(categoryNode.children || []), { name: summary }];
+      } else {
+        newData.children.push({ name: category, children: [{ name: summary }] });
+      }
+      return newData;
+    });
+  };
+
+  const handleMindMapUpdate = () => {
+    // This function can be expanded to perform more complex updates if needed
+    setMindMapData(prevData => ({ ...prevData }));
+  };
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -175,6 +196,10 @@ export default function EnhancedChat() {
               <span key={index} className="text-xs bg-gray-200 rounded px-1">{item}</span>
             ))}
           </div>
+        </div>
+        <div className="mt-4">
+          <h3 className="text-md font-semibold mb-2">Mind Map</h3>
+          <ConversationMindMap data={mindMapData} onUpdate={handleMindMapUpdate} />
         </div>
       </div>
     </div>
