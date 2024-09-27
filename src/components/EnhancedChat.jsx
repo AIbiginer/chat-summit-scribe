@@ -22,7 +22,7 @@ export default function EnhancedChat() {
   const callGPTAPI = async (prompt) => {
     try {
       const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-        model: "gpt-4o-mini", // Updated to use gpt-4o-mini
+        model: "gpt-4o-mini",
         messages: [{ role: "user", content: prompt }],
         max_tokens: 2000,
         n: 1,
@@ -32,7 +32,8 @@ export default function EnhancedChat() {
         headers: {
           'Authorization': `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
           'Content-Type': 'application/json',
-        }
+        },
+        timeout: 30000 // 30秒のタイムアウトを設定
       });
       return response.data.choices[0].message.content.trim();
     } catch (error) {
@@ -79,7 +80,7 @@ export default function EnhancedChat() {
 
     } catch (error) {
       console.error('Error generating headline and summary:', error);
-      setError('見出しと要約の生成中にエラーが発生しました。');
+      setError('見出しと要約の生成中にエラーが発生しました。しばらくしてからもう一度お試しください。');
     }
   }
 
@@ -101,7 +102,8 @@ export default function EnhancedChat() {
         const finalMessages = [...updatedMessages, aiMessage];
         setMessages(finalMessages);
         
-        await generateHeadlineAndSummary(finalMessages);
+        // 会話の要約と分析を非同期で行う
+        generateHeadlineAndSummary(finalMessages);
       } catch (error) {
         console.error('Error in message handling:', error);
         setError(error.message);
