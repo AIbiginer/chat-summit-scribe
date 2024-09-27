@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, lazy, Suspense } from 'react';
-import { Send, Maximize2, Minimize2, RefreshCw } from 'lucide-react';
+import { Maximize2, Minimize2, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from "@/components/ui/button";
