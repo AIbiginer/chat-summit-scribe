@@ -7,6 +7,7 @@ import { Loader2, RefreshCw, Send } from 'lucide-react';
 import { analyzeQuestion, generateFollowUpResponse } from '../utils/apiUtils';
 import SummaryVisualizer from './SummaryVisualizer';
 import DoubleCheckButton from './DoubleCheckButton';
+import LoadingIndicator from './LoadingIndicator';
 
 export default function QuestionAnalyzer() {
   const [question, setQuestion] = useState('');
@@ -14,7 +15,11 @@ export default function QuestionAnalyzer() {
   const queryClient = useQueryClient();
 
   const { isLoading, error, mutate } = useMutation({
-    mutationFn: analyzeQuestion,
+    mutationFn: async (q) => {
+      const initialResult = await analyzeQuestion(q);
+      // Immediately perform a double-check
+      return await analyzeQuestion(q, initialResult);
+    },
     onSuccess: (data) => {
       setAnalysisResult(data);
       queryClient.setQueryData(['analysisResult'], data);
@@ -45,7 +50,6 @@ export default function QuestionAnalyzer() {
   };
 
   const handleDoubleCheck = () => {
-    // ダブルチェック時に新しい分析を行う
     if (question.trim()) {
       mutate(question);
     }
@@ -72,6 +76,7 @@ export default function QuestionAnalyzer() {
           </div>
         </form>
         {error && <p className="text-red-500 mb-4">エラー: {error.message}</p>}
+        {isLoading && <LoadingIndicator />}
         {analysisResult && (
           <>
             <SummaryVisualizer

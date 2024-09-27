@@ -20,7 +20,7 @@ export const callGPTAPI = async (prompt) => {
       max_tokens: 500,
       n: 1,
       stop: null,
-      temperature: 0.5, // 精度を上げるために温度を下げる
+      temperature: 0.5,
     });
     return response.data.choices[0].message.content.trim();
   } catch (error) {
@@ -29,8 +29,8 @@ export const callGPTAPI = async (prompt) => {
   }
 };
 
-export const analyzeQuestion = async (question) => {
-  const prompt = `以下の質問を分析し、簡潔で正確な要約と重要ポイントを生成してください。結果は以下のJSON形式で返してください：
+export const analyzeQuestion = async (question, previousResult = null) => {
+  let prompt = `以下の質問を分析し、簡潔で正確な要約と重要ポイントを生成してください。結果は以下のJSON形式で返してください：
 
 {
   "summary": "質問の要約（200文字以内）",
@@ -45,6 +45,13 @@ export const analyzeQuestion = async (question) => {
 
 質問：
 ${question}`;
+
+  if (previousResult) {
+    prompt += `\n\n以前の分析結果：
+${JSON.stringify(previousResult, null, 2)}
+
+上記の以前の分析結果を参考に、より正確で詳細な分析を行ってください。`;
+  }
 
   try {
     const result = await callGPTAPI(prompt);
