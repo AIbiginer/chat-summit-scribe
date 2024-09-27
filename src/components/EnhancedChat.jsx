@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Card } from "@/components/ui/card"
-import ConversationMindMap from './ConversationMindMap'
+import ConversationSummary from './ConversationSummary'
 
 export default function EnhancedChat() {
   const [messages, setMessages] = useState([])
@@ -14,7 +14,8 @@ export default function EnhancedChat() {
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [summaries, setSummaries] = useState([])
   const [conversationFlow, setConversationFlow] = useState([])
-  const [mindMapData, setMindMapData] = useState({ name: 'Conversation', children: [] })
+  const [currentTopic, setCurrentTopic] = useState('会話を開始してください')
+  const [conversationSummary, setConversationSummary] = useState('まだ会話が始まっていません')
   const chatEndRef = useRef(null)
 
   const callGPTAPI = async (prompt) => {
@@ -54,13 +55,13 @@ export default function EnhancedChat() {
         }
         setMessages(prevMessages => [...prevMessages, aiMessage])
         
-        const summaryPrompt = `Summarize the following message in one sentence: "${inputText}"`;
-        const summary = await callGPTAPI(summaryPrompt);
-        const newSummary = {
-          id: Date.now(),
-          text: summary
-        }
-        setSummaries(prevSummaries => [...prevSummaries, newSummary])
+        const topicPrompt = `Based on the following message, what is the main topic being discussed? Respond in 10 words or less: "${inputText}"`;
+        const newTopic = await callGPTAPI(topicPrompt);
+        setCurrentTopic(newTopic);
+
+        const summaryPrompt = `Summarize the current state of the conversation, including this new message: "${inputText}"`;
+        const newSummary = await callGPTAPI(summaryPrompt);
+        setConversationSummary(newSummary);
 
         const guidancePrompt = `Based on the recent conversation, is the following message on topic? If not, suggest how to refocus: "${inputText}"`;
         const guidance = await callGPTAPI(guidancePrompt);
@@ -69,7 +70,6 @@ export default function EnhancedChat() {
         }
 
         setConversationFlow(prevFlow => [...prevFlow, inputText.slice(0, 20)])
-        updateMindMap(summary)
       } catch (error) {
         console.error('Error in message handling:', error);
         setMessages(prevMessages => [...prevMessages, { id: Date.now(), text: 'Sorry, an error occurred while processing your message.', sender: 'ai' }])
@@ -77,21 +77,9 @@ export default function EnhancedChat() {
     }
   }, [inputText])
 
-  const updateMindMap = (summary) => {
-    setMindMapData(prevData => {
-      const newData = { ...prevData };
-      newData.children.push({ name: summary });
-      return newData;
-    });
-  };
-
-  const handleMindMapUpdate = () => {
-    setMindMapData(prevData => ({ ...prevData }));
-  };
-
   return (
-    <div className={`flex h-screen bg-gray-100 text-gray-800 ${isFullscreen ? 'w-screen' : 'w-[1280px] mx-auto my-8 shadow-xl'}`}>
-      <div className="flex-1 flex flex-col max-w-3xl">
+    <div className={`flex h-screen bg-gray-100 text-gray-800 ${isFullscreen ? 'w-screen' : 'w-[1024px] mx-auto my-8 shadow-xl'}`}>
+      <div className="flex-1 flex flex-col max-w-2xl">
         <motion.header 
           className="bg-white border-b border-gray-200 p-4 flex justify-between items-center"
           initial={{ opacity: 0, y: -20 }}
@@ -150,34 +138,18 @@ export default function EnhancedChat() {
       </div>
 
       <div className="w-64 bg-gray-50 border-l border-gray-200 p-4 flex flex-col space-y-4">
-        <Card className="p-4 h-1/3">
-          <h2 className="text-lg font-semibold mb-2">Summaries</h2>
-          <ScrollArea className="h-[calc(100%-2rem)]">
-            <div className="space-y-2">
-              {summaries.map(summary => (
-                <div key={summary.id} className="p-2 bg-white rounded shadow">
-                  <p className="text-sm">{summary.text}</p>
-                </div>
-              ))}
-            </div>
-          </ScrollArea>
+        <Card className="p-4 h-1/2">
+          <ConversationSummary currentTopic={currentTopic} summary={conversationSummary} />
         </Card>
 
-        <Card className="p-4 h-1/3">
-          <h3 className="text-md font-semibold mb-2">Conversation Flow</h3>
+        <Card className="p-4 h-1/2">
+          <h3 className="text-md font-semibold mb-2">会話の流れ</h3>
           <ScrollArea className="h-[calc(100%-2rem)]">
             <div className="flex flex-wrap gap-1">
               {conversationFlow.map((item, index) => (
                 <span key={index} className="text-xs bg-gray-200 rounded px-1">{item}</span>
               ))}
             </div>
-          </ScrollArea>
-        </Card>
-
-        <Card className="p-4 h-1/3">
-          <h3 className="text-md font-semibold mb-2">Mind Map</h3>
-          <ScrollArea className="h-[calc(100%-2rem)]">
-            <ConversationMindMap data={mindMapData} onUpdate={handleMindMapUpdate} />
           </ScrollArea>
         </Card>
       </div>
