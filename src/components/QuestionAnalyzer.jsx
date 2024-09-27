@@ -8,6 +8,8 @@ import { analyzeQuestion, compareAnalysis } from '../utils/apiUtils';
 import SummaryVisualizer from './SummaryVisualizer';
 import DoubleCheckButton from './DoubleCheckButton';
 import LoadingIndicator from './LoadingIndicator';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { InfoIcon } from 'lucide-react';
 
 export default function QuestionAnalyzer() {
   const [question, setQuestion] = useState('');
@@ -56,7 +58,7 @@ export default function QuestionAnalyzer() {
   };
 
   const handleDoubleCheck = () => {
-    if (question.trim() && analysisResult) {
+    if (question.trim() && analysisResult && !isDoubleChecked) {
       doubleCheckMutation.mutate();
     }
   };
@@ -67,6 +69,13 @@ export default function QuestionAnalyzer() {
         <h1 className="text-3xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
           Question Analyzer
         </h1>
+        <Alert className="mb-4">
+          <InfoIcon className="h-4 w-4" />
+          <AlertTitle>AIの回答には注意が必要です</AlertTitle>
+          <AlertDescription>
+            AIは時として誤った情報を生成することがあります。精度を高めるため、ダブルチェック機能の使用をおすすめします。
+          </AlertDescription>
+        </Alert>
         <form onSubmit={handleSubmit} className="mb-6">
           <div className="flex space-x-2">
             <Input
@@ -90,7 +99,10 @@ export default function QuestionAnalyzer() {
               keyPoints={analysisResult.keyPoints}
             />
             <div className="mt-4 flex items-center justify-between">
-              <DoubleCheckButton onDoubleCheck={handleDoubleCheck} disabled={doubleCheckMutation.isLoading} />
+              <DoubleCheckButton 
+                onDoubleCheck={handleDoubleCheck} 
+                disabled={doubleCheckMutation.isLoading || isDoubleChecked}
+              />
               <span className="text-sm text-gray-400">
                 ダブルチェック状態: {doubleCheckStatus}
               </span>
