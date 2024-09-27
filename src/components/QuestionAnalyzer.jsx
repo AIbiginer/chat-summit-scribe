@@ -45,8 +45,17 @@ export default function QuestionAnalyzer() {
     },
     onSuccess: ({ newResult, comparison }) => {
       if (comparison.hasDifferences) {
-        setAnalysisResult(newResult);
-        queryClient.setQueryData(['analysisResult'], newResult);
+        setAnalysisResult(prevResult => ({
+          ...prevResult,
+          ...comparison.differences.reduce((acc, diff) => {
+            if (diff.type === 'summary') {
+              acc.summary = newResult.summary;
+            } else if (diff.type === 'keyPoint') {
+              acc.keyPoints = newResult.keyPoints;
+            }
+            return acc;
+          }, {})
+        }));
         setDoubleCheckStatus('更新済み');
       } else {
         setDoubleCheckStatus('変更なし');
