@@ -22,7 +22,7 @@ export default function EnhancedChat() {
   const callGPTAPI = async (prompt) => {
     try {
       const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-        model: "gpt-4o-mini",
+        model: "gpt-4",
         messages: [{ role: "user", content: prompt }],
         max_tokens: 2000,
         n: 1,
@@ -49,12 +49,18 @@ export default function EnhancedChat() {
 
   const generateHeadlineAndSummary = async (newMessages) => {
     const conversationContext = newMessages.map(m => `${m.sender}: ${m.text}`).join('\n');
-    const headlinePrompt = `以下の会話の見出しを、新聞の見出しのように簡潔かつ魅力的に作成してください（20文字以内）:\n${conversationContext}\n前回の見出し: ${headline}`;
-    const summaryPrompt = `以下の会話の要約を、新聞の要約のように簡潔かつ洞察に富んだ形で作成してください（100文字以内）。重要なポイントや興味深い展開に焦点を当ててください:\n${conversationContext}\n前回の要約: ${summary}`;
-    const topicAnalysisPrompt = `以下の会話から主要な話題を3つ抽出し、各話題の重要度（パーセンテージ）を算出してください。結果は以下の形式で返してください：
-    話題1: 話題名, 重要度
-    話題2: 話題名, 重要度
-    話題3: 話題名, 重要度
+    const headlinePrompt = `以下の会話の見出しを、新聞の一面を飾るような衝撃的かつ魅力的な見出しとして20文字以内で作成してください。会話の本質を捉え、読者の興味を引く表現を心がけてください：\n${conversationContext}\n前回の見出し: ${headline}`;
+    const summaryPrompt = `以下の会話の要約を、ピューリッツァー賞級のジャーナリストが書いたかのような洞察に富んだ形で100文字以内で作成してください。重要なポイントや興味深い展開に焦点を当て、読者に新たな視点を提供するような表現を心がけてください：\n${conversationContext}\n前回の要約: ${summary}`;
+    const topicAnalysisPrompt = `以下の会話から主要な話題を3つ抽出し、各話題の重要度（パーセンテージ）を算出してください。さらに、各話題に関連するキーワードを5つ挙げ、その話題に関する簡潔な説明（30文字程度）を追加してください。結果は以下の形式でJSON形式で返してください：
+    [
+      {
+        "name": "話題名",
+        "value": 重要度（数値）,
+        "keywords": ["キーワード1", "キーワード2", "キーワード3", "キーワード4", "キーワード5"],
+        "description": "話題の簡潔な説明"
+      },
+      ...
+    ]
     会話内容：${conversationContext}`;
 
     try {
@@ -68,10 +74,7 @@ export default function EnhancedChat() {
       setSummary(newSummary);
 
       // トピックデータの解析と設定
-      const topics = topicAnalysis.split('\n').map(line => {
-        const [name, importance] = line.split(':')[1].split(',');
-        return { name: name.trim(), value: parseFloat(importance) };
-      });
+      const topics = JSON.parse(topicAnalysis);
       setTopicData(topics);
 
     } catch (error) {
