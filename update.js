@@ -1,6 +1,12 @@
 const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const readline = require('readline');
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
 
 console.log('プロジェクトの更新とインストールを開始します...');
 
@@ -17,19 +23,34 @@ try {
   console.log('依存関係を更新しています...');
   execSync('npm install', { stdio: 'inherit' });
 
-  // .env ファイルが存在しない場合は作成
+  // .env ファイルの確認と作成
   const envPath = path.join(__dirname, '.env');
   if (!fs.existsSync(envPath)) {
     console.log('.env ファイルが見つかりません。新しく作成します。');
-    fs.writeFileSync(envPath, 'VITE_OPENAI_API_KEY=your_openai_api_key_here\n');
-    console.log('.env ファイルを作成しました。OpenAI API キーを設定してください。');
+    fs.writeFileSync(envPath, 'VITE_OPENAI_API_KEY=\n');
   }
 
-  // setup.js を実行してOpenAI API キーを設定
-  console.log('OpenAI API キーの設定を行います...');
-  execSync('node setup.js', { stdio: 'inherit' });
+  // OpenAI API キーの確認と設定
+  const envContent = fs.readFileSync(envPath, 'utf8');
+  const apiKeyMatch = envContent.match(/VITE_OPENAI_API_KEY=(.*)/);
+  const currentApiKey = apiKeyMatch ? apiKeyMatch[1].trim() : '';
 
-  console.log('プロジェクトの更新とインストールが完了しました。');
+  rl.question(`現在のOpenAI APIキー: ${currentApiKey}\n新しいAPIキーを入力してください（変更しない場合は空欄）: `, (newApiKey) => {
+    if (newApiKey.trim() !== '') {
+      const updatedEnvContent = envContent.replace(
+        /VITE_OPENAI_API_KEY=.*/,
+        `VITE_OPENAI_API_KEY=${newApiKey.trim()}`
+      );
+      fs.writeFileSync(envPath, updatedEnvContent);
+      console.log('OpenAI APIキーが更新されました。');
+    } else {
+      console.log('OpenAI APIキーは変更されませんでした。');
+    }
+
+    console.log('プロジェクトの更新とインストールが完了しました。');
+    rl.close();
+  });
 } catch (error) {
   console.error('更新とインストール中にエラーが発生しました:', error.message);
+  rl.close();
 }
