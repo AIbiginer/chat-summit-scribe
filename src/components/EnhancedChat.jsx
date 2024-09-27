@@ -106,7 +106,7 @@ export default function EnhancedChat() {
               <div className="text-red-500">エラーが発生しました: {error.message}</div>
             ) : (
               <ConversationSummary 
-                currentTopic={chatData?.currentTopic}
+                headline={chatData?.headline}
                 summary={chatData?.summary}
                 mainTopics={chatData?.mainTopics}
               />

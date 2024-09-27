@@ -9,7 +9,7 @@ const axiosInstance = axios.create({
     'Authorization': `Bearer ${API_KEY}`,
     'Content-Type': 'application/json',
   },
-  timeout: 10000
+  timeout: 30000 // タイムアウトを30秒に延長
 });
 
 export const callGPTAPI = async (prompt) => {
@@ -17,7 +17,7 @@ export const callGPTAPI = async (prompt) => {
     const response = await axiosInstance.post('', {
       model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: prompt }],
-      max_tokens: 150,
+      max_tokens: 500, // トークン数を増やして、より詳細な回答を得る
       n: 1,
       stop: null,
       temperature: 0.7,
@@ -31,17 +31,20 @@ export const callGPTAPI = async (prompt) => {
 
 export const generateTopicsAndSummary = async (messages) => {
   const conversationContext = messages.map(m => `${m.sender}: ${m.text}`).join('\n');
-  const prompt = `次の会話を分析し、以下の形式で結果を返してください：
+  const prompt = `以下の会話を分析し、教科書レベルの高品質な要約と話題を生成してください。結果は以下のJSON形式で返してください：
 
-1. 現在のトピック：会話の最新のトピックを1つ、15文字以内で
-2. 会話の要約：会話全体の要約を、100文字以内で
-3. 主要な話題：会話から抽出した3つの主要な話題を、各15文字以内で
+1. 見出し：会話の核心を捉えた印象的な見出しを30文字以内で
+2. 要約：会話の本質を簡潔かつ洞察力に富んだ形で要約し、200文字以内で
+3. 主要な話題：会話から抽出した3つの重要な話題を、各30文字以内で。それぞれの話題に対して、50文字以内の簡潔な説明を付け加えてください。
 
-結果は以下のJSON形式で返してください：
 {
-  "currentTopic": "現在のトピック",
-  "summary": "会話の要約",
-  "mainTopics": ["話題1", "話題2", "話題3"]
+  "headline": "見出し",
+  "summary": "要約",
+  "mainTopics": [
+    {"topic": "話題1", "description": "説明1"},
+    {"topic": "話題2", "description": "説明2"},
+    {"topic": "話題3", "description": "説明3"}
+  ]
 }
 
 会話内容：
