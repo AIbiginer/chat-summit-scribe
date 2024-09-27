@@ -5,10 +5,11 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { callGPTAPI, generateTopicsAndSummary } from '../utils/apiUtils';
+import ChatHistory from './ChatHistory';
+import CollapsibleSection from './CollapsibleSection';
+import TabSection from './TabSection';
 
-const ConversationSummary = lazy(() => import('./ConversationSummary'));
 const ChatInput = lazy(() => import('./ChatInput'));
-const ChatMessage = lazy(() => import('./ChatMessage'));
 
 export default function EnhancedChat() {
   const [messages, setMessages] = useState([]);
@@ -29,7 +30,7 @@ export default function EnhancedChat() {
     onSuccess: (aiResponse) => {
       const aiMessage = { id: Date.now(), text: aiResponse, sender: 'ai' };
       setMessages(prev => [...prev, aiMessage]);
-      refetch(); // 要約を更新
+      refetch();
     },
   });
 
@@ -47,42 +48,32 @@ export default function EnhancedChat() {
     queryClient.invalidateQueries(['chatData']);
   }, [queryClient]);
 
-  const memoizedChatMessages = useMemo(() => (
-    messages.map(message => (
-      <Suspense key={message.id} fallback={<div>Loading...</div>}>
-        <ChatMessage message={message} />
-      </Suspense>
-    ))
-  ), [messages]);
-
   return (
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className={`flex h-screen bg-gradient-to-br from-gray-900 to-black text-white ${isFullscreen ? 'w-screen' : 'w-[1024px] mx-auto my-8 rounded-lg shadow-2xl'}`}
+      className={`flex flex-col lg:flex-row h-screen bg-gradient-to-br from-gray-900 to-black text-white ${isFullscreen ? 'w-screen' : 'w-full lg:w-[1024px] mx-auto my-8 rounded-lg shadow-2xl'}`}
     >
-      <div className="flex-1 flex flex-col max-w-[60%]">
+      <div className="flex-1 flex flex-col lg:max-w-[60%]">
         <motion.header 
-          className="bg-gray-800 p-6 flex justify-between items-center rounded-t-lg"
+          className="bg-gray-800 p-4 lg:p-6 flex justify-between items-center rounded-t-lg"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">AI チャット</h1>
-          <div className="flex space-x-3">
+          <h1 className="text-2xl lg:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">AI チャット</h1>
+          <div className="flex space-x-2 lg:space-x-3">
             <Button variant="outline" size="icon" onClick={() => setIsFullscreen(!isFullscreen)} className="bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-200">
-              {isFullscreen ? <Minimize2 className="h-5 w-5" /> : <Maximize2 className="h-5 w-5" />}
+              {isFullscreen ? <Minimize2 className="h-4 w-4 lg:h-5 lg:w-5" /> : <Maximize2 className="h-4 w-4 lg:h-5 lg:w-5" />}
             </Button>
             <Button variant="outline" size="icon" onClick={handleRefresh} className="bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-200">
-              <RefreshCw className="h-5 w-5" />
+              <RefreshCw className="h-4 w-4 lg:h-5 lg:w-5" />
             </Button>
           </div>
         </motion.header>
 
-        <div className="flex-1 p-6 space-y-6 bg-gray-900 overflow-y-auto">
-          {memoizedChatMessages}
-        </div>
+        <ChatHistory messages={messages} />
 
         <Suspense fallback={<div>Loading...</div>}>
           <ChatInput
@@ -98,21 +89,15 @@ export default function EnhancedChat() {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="w-[40%] bg-gray-800 p-6 flex flex-col space-y-6 rounded-r-lg overflow-y-auto"
+        className="w-full lg:w-[40%] bg-gray-800 p-4 lg:p-6 flex flex-col space-y-4 lg:space-y-6 rounded-b-lg lg:rounded-r-lg overflow-y-auto"
       >
-        <Card className="p-6 bg-gray-700 text-white border-none shadow-lg">
-          <Suspense fallback={<div>Loading...</div>}>
-            {error ? (
-              <div className="text-red-500">エラーが発生しました: {error.message}</div>
-            ) : (
-              <ConversationSummary 
-                headline={chatData?.headline}
-                summary={chatData?.summary}
-                mainTopics={chatData?.mainTopics}
-              />
-            )}
-          </Suspense>
-        </Card>
+        <TabSection
+          headline={chatData?.headline}
+          summary={chatData?.summary}
+          mainTopics={chatData?.mainTopics}
+          isLoading={isLoading}
+          error={error}
+        />
       </motion.div>
     </motion.div>
   );
