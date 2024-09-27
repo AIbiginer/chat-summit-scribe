@@ -1,72 +1,67 @@
-# 拡張チャットアプリケーション
+# AI-Powered Chat Application
 
-このプロジェクトは、会話の要約やトピック追跡などの高度な機能を備えたAI駆動のチャットアプリケーションです。
+This project is an advanced AI-driven chat application featuring real-time conversation summaries and topic tracking.
 
-## インストールとセットアップ
+## Features
 
-以下の手順に従って、プロジェクトをローカルで設定してください：
+- Real-time AI-powered chat
+- Dynamic conversation summaries
+- Current topic tracking
+- Responsive design
 
-1. リポジトリをクローンします：
+## Quick Start
+
+1. Clone the repository:
    ```
    git clone https://github.com/Shintar00/chat-summit-scribe.git
    cd chat-summit-scribe
    ```
 
-2. 依存関係をインストールします：
+2. Install dependencies:
    ```
    npm install
    ```
 
-3. ルートディレクトリに`.env`ファイルを作成し、OpenAI APIキーを追加します：
+3. Set up environment variables:
+   Create a `.env` file in the root directory and add your OpenAI API key:
    ```
-   OPENAI_API_KEY=your_api_key_here
+   VITE_OPENAI_API_KEY=your_api_key_here
    ```
 
-4. 開発サーバーを起動します：
+4. Start the development server:
    ```
    npm run dev
    ```
 
-5. コマンドプロンプトに表示されたURLをクリックしてブラウザで開き、アプリケーションを表示します。
+5. Open the application in your browser using the URL provided in the terminal.
 
-## 使用方法
+## How to Use
 
-- ランディングページの「チャットを開始」をクリックしてチャットページに移動します。
-- 入力フィールドにメッセージを入力し、Enterキーを押すか送信ボタンをクリックします。
-- AIが応答し、会話の要約と現在のトピックがリアルタイムで更新されます。
+1. Click "Start Chat" on the landing page to enter the chat interface.
+2. Type your message and press Enter or click the send button.
+3. The AI will respond, and the conversation summary and current topic will update in real-time.
 
-## アップデート方法
+## Updating the Application
 
-1. 最新の変更を取得します：
+1. Pull the latest changes:
    ```
    git pull origin main
    ```
 
-2. 依存関係を更新します：
+2. Update dependencies:
    ```
    npm install
    ```
 
-3. 環境変数を確認し、必要に応じて`.env`ファイルを更新します。
-
-4. 開発サーバーを再起動します：
+3. Restart the development server:
    ```
    npm run dev
    ```
 
-5. アプリケーションが正常に動作することを確認します。
+## Contributing
 
-## 機能
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-- リアルタイムAI駆動チャット
-- 会話の要約
-- 現在のトピック追跡
-- レスポンシブデザイン
+## License
 
-## 貢献
-
-貢献は歓迎します！お気軽にプルリクエストを提出してください。
-
-## ライセンス
-
-このプロジェクトはMITライセンスの下でライセンスされています。
+This project is licensed under the MIT License.
