@@ -8,8 +8,8 @@
 
 1. リポジトリをクローンします：
    ```
-   git clone https://github.com/yourusername/enhanced-chat.git
-   cd enhanced-chat
+   git clone https://github.com/Shintar00/chat-summit-scribe.git
+   cd chat-summit-scribe
    ```
 
 2. 依存関係をインストールします：
