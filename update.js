@@ -2,7 +2,7 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-console.log('プロジェクトの更新を開始します...');
+console.log('プロジェクトの更新とインストールを開始します...');
 
 try {
   // Git の変更をフェッチ
@@ -25,7 +25,11 @@ try {
     console.log('.env ファイルを作成しました。OpenAI API キーを設定してください。');
   }
 
-  console.log('プロジェクトの更新が完了しました。');
+  // setup.js を実行してOpenAI API キーを設定
+  console.log('OpenAI API キーの設定を行います...');
+  execSync('node setup.js', { stdio: 'inherit' });
+
+  console.log('プロジェクトの更新とインストールが完了しました。');
 } catch (error) {
-  console.error('更新中にエラーが発生しました:', error.message);
+  console.error('更新とインストール中にエラーが発生しました:', error.message);
 }
