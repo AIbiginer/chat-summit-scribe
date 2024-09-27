@@ -168,29 +168,35 @@ export default function EnhancedChat() {
         </div>
       </div>
 
-      <div className="w-64 bg-gray-50 border-l border-gray-200 p-4 flex flex-col">
-        <h2 className="text-lg font-semibold mb-4">Summaries</h2>
-        <ScrollArea className="flex-1">
-          {summaries.map(summary => (
-            <div key={summary.id} className="mb-2 p-2 bg-white rounded shadow">
-              <span className="text-xs font-semibold text-blue-500">{summary.theme}</span>
-              <p className="text-sm">{summary.text}</p>
+      <ScrollArea className="w-64 bg-gray-50 border-l border-gray-200 p-4 flex flex-col">
+        <div className="space-y-6">
+          <div>
+            <h2 className="text-lg font-semibold mb-4">Summaries</h2>
+            <div className="space-y-2">
+              {summaries.map(summary => (
+                <div key={summary.id} className="p-2 bg-white rounded shadow">
+                  <span className="text-xs font-semibold text-blue-500">{summary.theme}</span>
+                  <p className="text-sm">{summary.text}</p>
+                </div>
+              ))}
             </div>
-          ))}
-        </ScrollArea>
-        <div className="mt-4">
-          <h3 className="text-md font-semibold mb-2">Conversation Flow</h3>
-          <div className="flex flex-wrap gap-1">
-            {conversationFlow.map((item, index) => (
-              <span key={index} className="text-xs bg-gray-200 rounded px-1">{item}</span>
-            ))}
+          </div>
+
+          <div>
+            <h3 className="text-md font-semibold mb-2">Conversation Flow</h3>
+            <div className="flex flex-wrap gap-1">
+              {conversationFlow.map((item, index) => (
+                <span key={index} className="text-xs bg-gray-200 rounded px-1">{item}</span>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-md font-semibold mb-2">Mind Map</h3>
+            <ConversationMindMap data={mindMapData} onUpdate={handleMindMapUpdate} />
           </div>
         </div>
-        <div className="mt-4">
-          <h3 className="text-md font-semibold mb-2">Mind Map</h3>
-          <ConversationMindMap data={mindMapData} onUpdate={handleMindMapUpdate} />
-        </div>
-      </div>
+      </ScrollArea>
     </div>
   )
 }
