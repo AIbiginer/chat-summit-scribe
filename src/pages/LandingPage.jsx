@@ -7,27 +7,36 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-blue-600 to-purple-600 text-white p-8">
-      <h1 className="text-5xl font-bold mb-6">AI チャットアシスタントへようこそ</h1>
-      <p className="text-xl mb-8 text-center max-w-2xl">
-        AIとの対話を通じて、新しい発見と洞察を得ましょう。
-        会話の要約と見出しがリアルタイムで生成され、対話の本質を捉えます。
-      </p>
-      <div className="bg-white bg-opacity-20 rounded-lg p-6 mb-8 max-w-2xl">
-        <h2 className="text-2xl font-semibold mb-4">使い方</h2>
-        <ol className="list-decimal list-inside space-y-2">
-          <li>「チャットを開始」ボタンをクリックしてチャット画面に移動</li>
-          <li>メッセージを入力して送信</li>
-          <li>AIからの返答を受け取り、会話を続ける</li>
-          <li>画面右側で自動生成される見出しと要約を確認</li>
-          <li>会話を重ねるごとに更新される要約で、対話の流れを把握</li>
-        </ol>
+      <div className="max-w-4xl w-full text-center">
+        <h1 className="text-6xl font-bold mb-6 tracking-tight">AI チャットの新時代</h1>
+        <p className="text-2xl mb-12 leading-relaxed">
+          会話を通じて、新しい発見と洞察を。<br />
+          リアルタイムで生成される要約が、対話の本質を捉えます。
+        </p>
+        <div className="bg-white bg-opacity-10 rounded-2xl p-8 mb-12">
+          <h2 className="text-3xl font-semibold mb-6">簡単3ステップ</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="flex flex-col items-center">
+              <div className="text-4xl font-bold mb-4 bg-white text-purple-600 rounded-full w-16 h-16 flex items-center justify-center">1</div>
+              <p className="text-lg">チャットを開始</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="text-4xl font-bold mb-4 bg-white text-purple-600 rounded-full w-16 h-16 flex items-center justify-center">2</div>
+              <p className="text-lg">AIと会話</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="text-4xl font-bold mb-4 bg-white text-purple-600 rounded-full w-16 h-16 flex items-center justify-center">3</div>
+              <p className="text-lg">要約を確認</p>
+            </div>
+          </div>
+        </div>
+        <Button 
+          onClick={() => navigate('/chat')}
+          className="bg-white text-purple-600 hover:bg-purple-100 transition-colors text-xl px-12 py-4 rounded-full shadow-lg"
+        >
+          チャットを始める
+        </Button>
       </div>
-      <Button 
-        onClick={() => navigate('/chat')}
-        className="bg-white text-blue-600 hover:bg-blue-100 transition-colors text-lg px-8 py-3"
-      >
-        チャットを開始
-      </Button>
     </div>
   );
 };
