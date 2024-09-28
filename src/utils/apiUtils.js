@@ -14,25 +14,22 @@ const axiosInstance = axios.create({
   timeout: 30000
 });
 
-// Input validation schema
 const promptSchema = z.string().min(1).max(2000);
 
 export const callGPTAPI = async (prompt) => {
   try {
-    // Input validation and sanitization
     const sanitizedPrompt = sanitizeInput(prompt);
     validateInput(promptSchema, sanitizedPrompt);
 
     const response = await axiosInstance.post('', {
       model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: sanitizedPrompt }],
-      max_tokens: 500,  // トークン数を500に増やす
+      max_tokens: 500,
       n: 1,
       stop: null,
       temperature: 0.7,
     });
 
-    // Response sanitization
     const sanitizedResponse = sanitizeInput(response.data.choices[0].message.content.trim());
     return sanitizedResponse;
   } catch (error) {
@@ -70,7 +67,13 @@ export const analyzeQuestion = async (question) => {
     }`;
 
     const result = await callGPTAPI(prompt);
-    return JSON.parse(result);
+    try {
+      return JSON.parse(result);
+    } catch (parseError) {
+      console.error('JSON解析エラー:', parseError);
+      console.log('解析できなかった結果:', result);
+      throw new Error('APIからの応答を解析できませんでした。');
+    }
   } catch (error) {
     console.error('Error analyzing question:', error);
     throw new Error('質問の分析中にエラーが発生しました。しばらくしてからもう一度お試しください。');
