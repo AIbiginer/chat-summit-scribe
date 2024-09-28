@@ -15,6 +15,7 @@ import { motion } from 'framer-motion';
 import { sanitizeInput, validateInput, handleApiError } from '../utils/securityUtils';
 import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const questionSchema = z.string().min(1).max(500);
 
@@ -102,8 +103,7 @@ export default function QuestionAnalyzer() {
       return await generateFollowUpResponse(prompt);
     },
     onSuccess: (data) => {
-      // 回答を最大150文字に制限
-      setFollowUpResponse(data.slice(0, 150) + (data.length > 150 ? '...' : ''));
+      setFollowUpResponse(data);
     },
     onError: (error) => {
       console.error('Error in follow-up:', error);
@@ -194,7 +194,9 @@ export default function QuestionAnalyzer() {
               className="mt-6 bg-gray-700 p-4 rounded-lg"
             >
               <h3 className="text-xl font-semibold mb-2 text-indigo-300">{t('followUpResponse')}</h3>
-              <p className="text-gray-200">{followUpResponse}</p>
+              <ScrollArea className="h-24 rounded-md border p-4">
+                <p className="text-gray-200">{followUpResponse}</p>
+              </ScrollArea>
             </motion.div>
           )}
         </Card>
