@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,15 +14,17 @@ import { InfoIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { sanitizeInput, validateInput, handleApiError } from '../utils/securityUtils';
 import { z } from 'zod';
+import { useTranslation } from 'react-i18next';
 
 const questionSchema = z.string().min(1).max(500);
 
 export default function QuestionAnalyzer() {
+  const { t } = useTranslation();
   const [question, setQuestion] = useState('');
   const [analysisResult, setAnalysisResult] = useState(null);
   const [hallucinationCheckResult, setHallucinationCheckResult] = useState(null);
   const [isDoubleChecked, setIsDoubleChecked] = useState(false);
-  const [doubleCheckStatus, setDoubleCheckStatus] = useState('未チェック');
+  const [doubleCheckStatus, setDoubleCheckStatus] = useState(t('notChecked'));
   const [followUpResponse, setFollowUpResponse] = useState(null);
   const queryClient = useQueryClient();
 
@@ -32,7 +34,7 @@ export default function QuestionAnalyzer() {
       validateInput(questionSchema, sanitizedQuestion);
       const result = await analyzeQuestion(sanitizedQuestion);
       setIsDoubleChecked(false);
-      setDoubleCheckStatus('未チェック');
+      setDoubleCheckStatus(t('notChecked'));
       return result;
     },
     onSuccess: async (data) => {
@@ -49,7 +51,7 @@ export default function QuestionAnalyzer() {
 
   const doubleCheckMutation = useMutation({
     mutationFn: async () => {
-      setDoubleCheckStatus('チェック中...');
+      setDoubleCheckStatus(t('checking'));
       const sanitizedQuestion = sanitizeInput(question);
       validateInput(questionSchema, sanitizedQuestion);
       const newResult = await analyzeQuestion(sanitizedQuestion);
@@ -69,9 +71,9 @@ export default function QuestionAnalyzer() {
             return acc;
           }, {})
         }));
-        setDoubleCheckStatus('更新済み');
+        setDoubleCheckStatus(t('updated'));
       } else {
-        setDoubleCheckStatus('変更なし');
+        setDoubleCheckStatus(t('noChange'));
       }
       setIsDoubleChecked(true);
     },
@@ -86,13 +88,13 @@ export default function QuestionAnalyzer() {
       let prompt = '';
       switch (action) {
         case 'explain':
-          prompt = `以下の内容についてもっと詳しく説明してください：\n${item.content.title || item.content}`;
+          prompt = t('explainPrompt', { content: item.content.title || item.content });
           break;
         case 'example':
-          prompt = `以下の内容に関連する具体的な例を挙げてください：\n${item.content.title || item.content}`;
+          prompt = t('examplePrompt', { content: item.content.title || item.content });
           break;
         case 'question':
-          prompt = `以下の内容について、よくある質問とその回答を3つ挙げてください：\n${item.content.title || item.content}`;
+          prompt = t('questionPrompt', { content: item.content.title || item.content });
           break;
         default:
           throw new Error('Invalid action');
@@ -135,13 +137,13 @@ export default function QuestionAnalyzer() {
       >
         <Card className="bg-gray-800 p-6 rounded-lg shadow-lg overflow-hidden">
           <h1 className="text-3xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-fuchsia-500">
-            質問分析ツール
+            {t('questionAnalyzer')}
           </h1>
           <Alert className="mb-4 bg-indigo-900 border-indigo-700">
             <InfoIcon className="h-4 w-4 text-indigo-400" />
-            <AlertTitle className="text-indigo-300">AIの回答には注意が必要です</AlertTitle>
+            <AlertTitle className="text-indigo-300">{t('aiWarningTitle')}</AlertTitle>
             <AlertDescription className="text-gray-300">
-              AIは時として誤った情報を生成することがあります。精度を高めるため、ハルシネーションチェック結果を確認し、必要に応じてダブルチェック機能をお使いください。
+              {t('aiWarningDescription')}
             </AlertDescription>
           </Alert>
           <form onSubmit={handleSubmit} className="mb-6">
@@ -150,7 +152,7 @@ export default function QuestionAnalyzer() {
                 type="text"
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
-                placeholder="質問を入力してください..."
+                placeholder={t('enterQuestion')}
                 className="flex-1 bg-gray-700 text-white placeholder-gray-400 border-none focus:ring-2 focus:ring-indigo-500"
               />
               <Button type="submit" disabled={isLoading} className="bg-indigo-600 hover:bg-indigo-700">
@@ -158,7 +160,7 @@ export default function QuestionAnalyzer() {
               </Button>
             </div>
           </form>
-          {error && <p className="text-red-500 mb-4">エラー: {error.message}</p>}
+          {error && <p className="text-red-500 mb-4">{t('error')}: {error.message}</p>}
           {isLoading && <LoadingIndicator />}
           {analysisResult && (
             <motion.div
@@ -178,7 +180,7 @@ export default function QuestionAnalyzer() {
                   disabled={doubleCheckMutation.isLoading || isDoubleChecked}
                 />
                 <span className="text-sm text-gray-400">
-                  ダブルチェック状態: {doubleCheckStatus}
+                  {t('doubleCheckStatus')}: {doubleCheckStatus}
                 </span>
               </div>
             </motion.div>
@@ -190,7 +192,7 @@ export default function QuestionAnalyzer() {
               transition={{ duration: 0.5 }}
               className="mt-6 bg-gray-700 p-4 rounded-lg"
             >
-              <h3 className="text-xl font-semibold mb-2 text-indigo-300">フォローアップ回答</h3>
+              <h3 className="text-xl font-semibold mb-2 text-indigo-300">{t('followUpResponse')}</h3>
               <p className="text-gray-200">{followUpResponse}</p>
             </motion.div>
           )}
