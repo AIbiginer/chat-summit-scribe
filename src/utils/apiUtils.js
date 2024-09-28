@@ -26,7 +26,7 @@ export const callGPTAPI = async (prompt) => {
     const response = await axiosInstance.post('', {
       model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: sanitizedPrompt }],
-      max_tokens: 500,
+      max_tokens: 150,  // トークン数を150に制限
       n: 1,
       stop: null,
       temperature: 0.5,
