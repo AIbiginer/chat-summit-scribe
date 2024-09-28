@@ -39,12 +39,6 @@ AIを活用したリアルタイム会話要約と話題追跡機能を備えた
    install.bat
    ```
 
-   Mac/Linux:
-   ```
-   chmod +x install.sh
-   ./install.sh
-   ```
-
 3. `.env`ファイルを作成し、OpenAI APIキーを設定：
    ```
    VITE_OPENAI_API_KEY=your_openai_api_key_here
@@ -60,9 +54,8 @@ npm run dev
 
 本番モード：
 Windows: `run_production.bat`
-Mac/Linux: `./run_production.sh`
 
-ブラウザで`http://localhost:5173`を開いてアクセス。
+ブラウザで`http://localhost:**＊＊`を開いてアクセス。
 
 ## 使用方法
 
@@ -76,7 +69,6 @@ Mac/Linux: `./run_production.sh`
 プロジェクトを最新の状態に保つには：
 
 Windows: `update.bat`
-Mac/Linux: `./update.sh`
 
 このスクリプトは、GitリポジトリのPull、依存関係の更新、OpenAI APIキーの確認を行います。
 
@@ -152,12 +144,6 @@ This project is developed for non-profit purposes and is not intended for moneti
    install.bat
    ```
 
-   Mac/Linux:
-   ```
-   chmod +x install.sh
-   ./install.sh
-   ```
-
 3. Create a `.env` file and set your OpenAI API key:
    ```
    VITE_OPENAI_API_KEY=your_openai_api_key_here
@@ -173,9 +159,8 @@ npm run dev
 
 Production mode:
 Windows: `run_production.bat`
-Mac/Linux: `./run_production.sh`
 
-Access the application by opening `http://localhost:5173` in your browser.
+Access the application by opening `http://localhost:*＊＊＊` in your browser.
 
 ## Usage
 
@@ -189,7 +174,6 @@ Access the application by opening `http://localhost:5173` in your browser.
 To keep the project up-to-date:
 
 Windows: `update.bat`
-Mac/Linux: `./update.sh`
 
 This script performs a Git repository pull, updates dependencies, and checks the OpenAI API key.
 
