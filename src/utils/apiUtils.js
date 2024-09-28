@@ -68,7 +68,15 @@ export const analyzeQuestion = async (question) => {
 
     const result = await callGPTAPI(prompt);
     try {
-      return JSON.parse(result);
+      // JSONの前後の空白を取り除き、JSONの開始と終了を確認
+      const trimmedResult = result.trim();
+      const jsonStartIndex = trimmedResult.indexOf('{');
+      const jsonEndIndex = trimmedResult.lastIndexOf('}') + 1;
+      if (jsonStartIndex === -1 || jsonEndIndex === -1) {
+        throw new Error('有効なJSONが見つかりません');
+      }
+      const jsonString = trimmedResult.slice(jsonStartIndex, jsonEndIndex);
+      return JSON.parse(jsonString);
     } catch (parseError) {
       console.error('JSON解析エラー:', parseError);
       console.log('解析できなかった結果:', result);
