@@ -15,7 +15,7 @@ const axiosInstance = axios.create({
 });
 
 // Input validation schema
-const promptSchema = z.string().min(1).max(1000);
+const promptSchema = z.string().min(1).max(2000);
 
 export const callGPTAPI = async (prompt) => {
   try {
@@ -26,10 +26,10 @@ export const callGPTAPI = async (prompt) => {
     const response = await axiosInstance.post('', {
       model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: sanitizedPrompt }],
-      max_tokens: 150,  // トークン数を150に制限
+      max_tokens: 500,  // トークン数を500に増やす
       n: 1,
       stop: null,
-      temperature: 0.5,
+      temperature: 0.7,
     });
 
     // Response sanitization
@@ -52,22 +52,22 @@ export const analyzeQuestion = async (question) => {
     const sanitizedQuestion = sanitizeInput(question);
     validateInput(promptSchema, sanitizedQuestion);
 
-    let prompt = `以下の質問を分析し、簡潔で正確な要約と重要ポイントを生成してください。結果は以下のJSON形式で返してください：
+    let prompt = `質問を分析し、以下の形式でJSONレスポンスを生成してください：
+    1. 質問の要約（200文字以内）
+    2. 3つの重要ポイント（各30文字以内のタイトルと50文字以内の説明）
+    3. 新しい視点や洞察を含める
 
+    質問: ${sanitizedQuestion}
+
+    JSONフォーマット:
     {
-      "summary": "質問の要約（200文字以内）",
+      "summary": "質問の要約",
       "keyPoints": [
-        {"title": "重要ポイント1（30文字以内）", "description": "説明（50文字以内）"},
-        {"title": "重要ポイント2（30文字以内）", "description": "説明（50文字以内）"},
-        {"title": "重要ポイント3（30文字以内）", "description": "説明（50文字以内）"}
+        {"title": "重要ポイント1", "description": "説明1"},
+        {"title": "重要ポイント2", "description": "説明2"},
+        {"title": "重要ポイント3", "description": "説明3"}
       ]
-    }
-
-    質問の内容を正確に理解し、適切な要約と重要ポイントを抽出してください。
-    また、前回の分析とは異なる視点や新しい洞察を含めるよう努めてください。
-
-    質問：
-    ${sanitizedQuestion}`;
+    }`;
 
     const result = await callGPTAPI(prompt);
     return JSON.parse(result);
@@ -82,17 +82,13 @@ export const compareAnalysis = async (oldResult, newResult) => {
     const sanitizedOldResult = sanitizeInput(JSON.stringify(oldResult));
     const sanitizedNewResult = sanitizeInput(JSON.stringify(newResult));
 
-    const prompt = `以下の2つの分析結果を比較し、重要な違いがあるかどうかを判断してください。
-    細かな表現の違いは無視し、内容に大きな齟齬がある場合のみ違いとして報告してください。
-    結果はJSON形式で返してください。
+    const prompt = `2つの分析結果を比較し、重要な違いを特定してJSONで返してください。
+    軽微な表現の違いは無視し、内容の大きな差異のみを報告してください。
 
-    古い分析結果:
-    ${sanitizedOldResult}
+    古い分析: ${sanitizedOldResult}
+    新しい分析: ${sanitizedNewResult}
 
-    新しい分析結果:
-    ${sanitizedNewResult}
-
-    返すべきJSON形式:
+    JSONフォーマット:
     {
       "hasDifferences": true/false,
       "differences": [
@@ -103,7 +99,7 @@ export const compareAnalysis = async (oldResult, newResult) => {
       ]
     }
 
-    違いがない場合や、違いが軽微な場合は、"hasDifferences": false と "differences": [] を返してください。`;
+    違いがない場合は、"hasDifferences": false と空の "differences" 配列を返してください。`;
 
     const result = await callGPTAPI(prompt);
     return JSON.parse(result);
