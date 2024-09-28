@@ -24,7 +24,7 @@ export const callGPTAPI = async (prompt) => {
     const response = await axiosInstance.post('', {
       model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: sanitizedPrompt }],
-      max_tokens: 500,
+      max_tokens: 1000,
       n: 1,
       stop: null,
       temperature: 0.7,
@@ -117,7 +117,9 @@ export const generateFollowUpResponse = async (prompt) => {
     const sanitizedPrompt = sanitizeInput(prompt);
     validateInput(promptSchema, sanitizedPrompt);
 
-    const result = await callGPTAPI(sanitizedPrompt);
+    const modifiedPrompt = `${sanitizedPrompt}\n\n回答は短く、端的に、わかりやすく補足してください。50文字以内で回答してください。`;
+
+    const result = await callGPTAPI(modifiedPrompt);
     return result;
   } catch (error) {
     console.error('Error generating follow-up response:', error);
