@@ -102,7 +102,8 @@ export default function QuestionAnalyzer() {
       return await generateFollowUpResponse(prompt);
     },
     onSuccess: (data) => {
-      setFollowUpResponse(data);
+      // 回答を最大150文字に制限
+      setFollowUpResponse(data.slice(0, 150) + (data.length > 150 ? '...' : ''));
     },
     onError: (error) => {
       console.error('Error in follow-up:', error);
